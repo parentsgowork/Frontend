@@ -7,6 +7,7 @@ import { useAuthStore } from './stores/useAuthStore';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import SignupForm from './pages/Signup';
+import ApiTest from './pages/ApiTest';
 
 
 const App = () => {
@@ -20,14 +21,13 @@ const App = () => {
   , [navigate]);
 
   return (
-    <Router>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<SignupForm />} />
-        </Route>
-      </Routes>
-    </Router>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignupForm />} />
+        <Route path="/api-test" element={<ApiTest />} />
+      </Route>
+    </Routes>
   );
 };
 

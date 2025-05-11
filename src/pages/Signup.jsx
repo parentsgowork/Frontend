@@ -1,39 +1,97 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import RegionDropdown from "../components/SignUp/RegionDropdown";
 import EducationDropdown from "../components/SignUp/EducationDropdown";
+import sendEmailVerification from "../api/feature/Auth/sendEmailVerification";
+import confirmEmailVerification from "../api/feature/Auth/confirmEmailVerification";
+import signupWithEmail from "../api/feature/Auth/signupWithEmail";
 
 const SignupForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
-    email: "",
-    name: "",
-    age: 20,
-    gender: "",
-    region: "",
-    job: "",
-    experience: 0,
-    education: "",
+        isVerified: false,
+        email: "",
+        name: "",
+        password: "",
+        age: 0,
+        gender: "", // "MALE" | "FEMALE"
+        region: "",
+        job: "",
+        career: 0,
+        finalEdu: "", // "HIGH_SCHOOL" | "ASSOCIATE" | "BACHELOR" | "MASTER" | "DOCTOR"
     });
 
     const [isAuthCodeSent, setIsAuthCodeSent] = useState(false);
     const [authCode, setAuthCode] = useState("");
 
+    // 공통 인풋 변경 처리
     const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     };
 
+    // 슬라이더 변경 처리
     const handleSliderChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
     };
 
+    // 성별 선택 처리
     const handleGenderSelect = (gender) => {
     setFormData({ ...formData, gender });
     };
 
-    const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+    // 이메일 인증번호 전송
+    const handleSendAuthCode = async () => {
+        if(!formData.email) {
+            alert("이메일을 입력해주세요.");
+            return;
+        }
+        try {
+            await sendEmailVerification(formData.email, "SIGNUP");
+            setIsAuthCodeSent(true);
+        } catch {
+            console.log("인증 코드 전송 실패: ", formData)
+        }
+        
+    };
+
+    // 이메일 인증번호 확인
+    const handleConfirmAuthCode = async () => {
+        if(!authCode) {
+            alert("인증번호를 입력해주세요.");
+            return;
+        }
+        try {
+            await confirmEmailVerification(formData.email, authCode);
+            setFormData((prev) => ({
+                ...prev,
+                isVerified: true,
+            }));
+        } catch {
+            alert("인증번호가 일치하지 않습니다.");
+            console.log("인증 코드 확인 실패: ", formData)
+        }
+    };
+
+    // 회원가입 제출
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if(!formData.isVerified) {
+            alert("이메일 인증을 완료해주세요.");
+            return;
+        }
+
+        try {
+            console.log("회원가입 요청 데이터:", formData);
+            const response = await signupWithEmail(formData);
+            console.log("회원가입 성공 응답:", response);
+            navigate("/login");
+        } catch {
+            console.log("회원가입 실패: ", formData)
+        }
+
     };
 
     return (
@@ -42,15 +100,31 @@ const SignupForm = () => {
             <Section>
                 <FormLabel>이메일<span style={{color: 'red'}}>*</span></FormLabel>
                 <FormRow>
-                    <FormInput name="email" value={formData.email} onChange={handleChange} placeholder="이메일을 입력해주세요" required />
-                    <AuthCodeButton type="button" onClick = {()=>{setIsAuthCodeSent(true)}}>인증번호 받기</AuthCodeButton>
+                    <FormInput 
+                        name="email" 
+                        value={formData.email} 
+                        onChange={handleChange} 
+                        placeholder="이메일을 입력해주세요" 
+                        required 
+                        type="email"
+                    />
+                    <AuthCodeButton type="button" onClick = {()=>{handleSendAuthCode}}>인증번호 받기</AuthCodeButton>
                 </FormRow>
                 {isAuthCodeSent && (
                     <FormRow style={{marginTop: '10px'}}>
-                        <FormInput name="authCode" value={authCode} onChange={(e) => setAuthCode(e.target.value)} placeholder="인증번호 6자리 입력" required />
-                        <AuthCodeButton type="button" onClick={() => alert("인증 완료!")}
-                            style={{backgroundColor: '#2563EB', color: 'white'}}>
-                                확인
+                        <FormInput 
+                            name="authCode" 
+                            value={authCode} 
+                            onChange={(e) => setAuthCode(e.target.value)} 
+                            placeholder="인증번호 6자리 입력" 
+                            required 
+                        />
+                        <AuthCodeButton 
+                            type="button" 
+                            onClick={() => handleConfirmAuthCode}
+                            style={{backgroundColor: '#2563EB', color: 'white'}}
+                        >
+                            확인
                         </AuthCodeButton>
                     </FormRow>
                 )}
@@ -59,22 +133,45 @@ const SignupForm = () => {
             <Section>
                 <FormLabel>이름<span style={{color: 'red'}}>*</span></FormLabel>
                 <FormRow>
-                    <FormInput name="name" value={formData.name} onChange={handleChange} placeholder="이름을 입력해주세요" required />
+                    <FormInput 
+                        name="name" 
+                        value={formData.name} 
+                        onChange={handleChange} 
+                        placeholder="이름을 입력해주세요" 
+                        required />
                 </FormRow>  
             </Section>
 
             <Section>
                 <FormLabel>나이<span style={{color: 'red'}}>*</span>   {formData.age}세</FormLabel>
                 <FormRow>
-                    <RangeInput type="range" name="age" min="0" max="100" value={formData.age} onChange={(e) => handleSliderChange("age", parseInt(e.target.value))}/>
+                    <RangeInput 
+                        type="range" 
+                        name="age" 
+                        min="0" 
+                        max="100" 
+                        value={formData.age} 
+                        onChange={(e) => handleSliderChange("age", parseInt(e.target.value))}/>
                 </FormRow>
             </Section>
 
             <Section>
                 <FormLabel>성별<span style={{color: 'red'}}>*</span></FormLabel>
                 <FormRow>
-                    <GenderButton type="button" onClick={() => handleGenderSelect("남성")} className={`flex-1 border px-2 py-1 rounded ${formData.gender === "남성" ? "bg-blue-100" : "bg-white"}`}>남성</GenderButton>
-                    <GenderButton type="button" onClick={() => handleGenderSelect("여성")} className={`flex-1 border px-2 py-1 rounded ${formData.gender === "여성" ? "bg-blue-100" : "bg-white"}`}>여성</GenderButton>
+                    <GenderButton 
+                        type="button" 
+                        onClick={() => handleGenderSelect("MALE")} 
+                        className={`flex-1 border px-2 py-1 rounded ${formData.gender === "남성" ? "bg-blue-100" : "bg-white"}`}
+                    >
+                            남성
+                    </GenderButton>
+                    <GenderButton 
+                        type="button" 
+                        onClick={() => handleGenderSelect("여성")} 
+                        className={`flex-1 border px-2 py-1 rounded ${formData.gender === "여성" ? "bg-blue-100" : "bg-white"}`}
+                    >
+                        여성
+                    </GenderButton>
                 </FormRow>
             </Section>
 
@@ -91,14 +188,26 @@ const SignupForm = () => {
             <Section>
                 <FormLabel>직업<span style={{color: 'red'}}>*</span></FormLabel>
                 <FormRow>
-                    <FormInput name="job" value={formData.job} onChange={handleChange} placeholder="직업을 입력해주세요" required />
+                    <FormInput 
+                        name="job" 
+                        value={formData.job} 
+                        onChange={handleChange} 
+                        placeholder="직업을 입력해주세요" 
+                        required 
+                    />
                 </FormRow>
             </Section>
 
             <Section>
                 <FormLabel>경력 연차<span style={{color: 'red'}}>*</span>   {formData.experience}년</FormLabel>
                 <FormRow>
-                    <RangeInput type="range" name="experience" min="0" max="40" value={formData.experience} onChange={(e) => handleSliderChange("experience", parseInt(e.target.value))} />
+                    <RangeInput 
+                        type="range" 
+                        name="career" 
+                        min="0" 
+                        max="40" 
+                        value={formData.career} 
+                        onChange={(e) => handleSliderChange("career", parseInt(e.target.value))} />
                 </FormRow>
             </Section>
 
@@ -106,8 +215,8 @@ const SignupForm = () => {
                 <FormLabel>최종학력<span style={{color: 'red'}}>*</span></FormLabel>
                 <FormRow>
                     <EducationDropdown
-                        selected={formData.education}
-                        onChange={(education) => setFormData({ ...formData, education })}
+                        selected={formData.finalEdu}
+                        onChange={(education) => setFormData({ ...formData, finalEdu: education })}
                     />
                 </FormRow>
             </Section>

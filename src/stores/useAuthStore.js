@@ -1,26 +1,44 @@
 import { create } from "zustand";
 
-const useAuthStore = create((set) => ({
-    token : null,
-    isLoggendIn : false,
+export const useAuthStore = create((set) => ({
+    accessToken : null,
+    refreshToken : null,
+    isLoggedIn : false,
 
     // 초기상태 복원
     restoreState: () => {
-        const token = localStorage.getItem('token');
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
         
         set({
-            token: token || null,
-            isLoggedIn: !!token,
+            accessToken : accessToken || null,
+            refreshToken : refreshToken || null,
+            isLoggedIn : !!accessToken,
         })
     },
 
     // 로그인
-    login: (token) => {
-        if(token) localStorage.setItem('token', token);
+    login: (accessToken, refreshToken) => {
+        if (accessToken) localStorage.setItem('accessToken', accessToken);
+        if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
         
         set({
-            token,
+            accessToken,
+            refreshToken,
             isLoggedIn: true,
+        });
+    },
+
+    // 로그아웃
+    logout: () => {
+        ['accessToken', 'refreshToken'].forEach(token => {
+            if (token) localStorage.removeItem(token);
+        });
+        
+        set({
+            accessToken: null,
+            refreshToken: null,
+            isLoggedIn: false,
         });
     }
 }));
