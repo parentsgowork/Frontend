@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Footer from '../components/Footer';
 import ChatCategorySelector from '../components/Home/ChatCategorySelector';
 import exampleImage from '../assets/images/metamong.png'; // 예시 이미지 경로
+import { theme } from '../constants/theme';
 
 const Home = () => {
   const serviceSectionRef = React.useRef(null);
@@ -157,6 +158,10 @@ const Section = styled.section`
 const FooterSection = styled.section`
   height: auto;
   background: #fafafa;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    display: none;
+  }
 `;
 
 const Title = styled.h1`
