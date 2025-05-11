@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 
 const Container = styled.div`
 	display: flex;
+	justify-content: center;
 	width: 100%;
 	height: 100%;
 
@@ -30,21 +31,6 @@ const Container = styled.div`
 	}
 `;
 
-const Top = styled.div`
-	// width: 820px;
-	max-width: 820px;
-	height: 68px;
-
-	@media (max-width: 1280px) {
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	@media (max-width: ${theme.breakpoints.md}) {
-		height: auto;
-		box-sizing: border-box;
-	}
-`;
 
 const Section = styled.div`
 	width: 100%;
@@ -52,16 +38,17 @@ const Section = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	margin: 0 auto;
 
 	@media (max-width: 820px) {
-		width: 100%;
-		height: auto;
+		padding: 0 16px;
 	}
 
 	@media (max-width: ${theme.breakpoints.md}) {
 		box-sizing: border-box;
 	}
 `;
+
 
 const RightAside = styled.div`
 	width: 0px;
@@ -90,6 +77,30 @@ const TitleText = styled.div`
 	line-height: normal;
 	margin-top: 35px;
 `;
+
+const FloatingButton = styled.button`
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background-color: ${theme.colors.primary || '#4CAF50'};
+	color: white;
+	border: none;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	font-size: 28px;
+	z-index: 999; // 항상 최상단
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&:hover {
+		background-color: ${theme.colors.primaryDark || '#388E3C'};
+	}
+`;
+
 
 export default function Layout({ leftAsideContent, rightAsideContent }) {
 

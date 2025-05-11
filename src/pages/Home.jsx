@@ -1,11 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from '../components/Footer';
 import ChatCategorySelector from '../components/Home/ChatCategorySelector';
 import exampleImage from '../assets/images/metamong.png'; // 예시 이미지 경로
+import { theme } from '../constants/theme';
 
 const Home = () => {
   const serviceSectionRef = React.useRef(null);
+  const navigate = useNavigate();
 
   const handleScrollToSection = () => {
     serviceSectionRef.current?.scrollIntoView({
@@ -104,6 +107,10 @@ const Home = () => {
       <FooterSection>
         <Footer />
       </FooterSection>
+
+      <FloatingButton onClick={() => navigate('/chatbot')}>
+        💬
+      </FloatingButton>
     </PageWrapper>
   );
 };
@@ -157,6 +164,10 @@ const Section = styled.section`
 const FooterSection = styled.section`
   height: auto;
   background: #fafafa;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    display: none;
+  }
 `;
 
 const Title = styled.h1`
@@ -291,4 +302,27 @@ const ArrowButton = styled.button`
   &:hover {
     background: #e0ecff;
   }
+`;
+
+const FloatingButton = styled.button`
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background-color: black;
+	color: white;
+	border: none;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	font-size: 28px;
+	z-index: 999; // 항상 최상단
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&:hover {
+		background-color: ${theme.colors.primaryDark || '#388E3C'};
+	}
 `;
