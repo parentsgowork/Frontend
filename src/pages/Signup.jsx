@@ -69,6 +69,7 @@ const SignupForm = () => {
                 ...prev,
                 isVerified: true,
             }));
+            alert("인증번호가 확인되었습니다.");
         } catch {
             alert("인증번호가 일치하지 않습니다.");
             console.log("인증 코드 확인 실패: ", formData)
@@ -108,7 +109,7 @@ const SignupForm = () => {
                         required 
                         type="email"
                     />
-                    <AuthCodeButton type="button" onClick = {()=>{handleSendAuthCode}}>인증번호 받기</AuthCodeButton>
+                    <AuthCodeButton type="button" onClick = {handleSendAuthCode}>인증번호 받기</AuthCodeButton>
                 </FormRow>
                 {isAuthCodeSent && (
                     <FormRow style={{marginTop: '10px'}}>
@@ -121,7 +122,7 @@ const SignupForm = () => {
                         />
                         <AuthCodeButton 
                             type="button" 
-                            onClick={() => handleConfirmAuthCode}
+                            onClick={handleConfirmAuthCode}
                             style={{backgroundColor: '#2563EB', color: 'white'}}
                         >
                             확인

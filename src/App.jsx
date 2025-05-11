@@ -4,10 +4,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { setupSpringInterceptors } from './api/config/setupSpringInterceptors';
 import springAPI from './api/config/springApi';
 import { useAuthStore } from './stores/useAuthStore';
+import ApiTest from './pages/ApiTest';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import SignupForm from './pages/Signup';
-import ApiTest from './pages/ApiTest';
+import Login from './pages/Login';
+import ChatbotPage from './pages/ChatbotPage';
+
 
 
 const App = () => {
@@ -23,9 +26,11 @@ const App = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
+        <Route path="/api-test" element={<ApiTest />} />
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignupForm />} />
-        <Route path="/api-test" element={<ApiTest />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/chatbot" element={<ChatbotPage />} />
       </Route>
     </Routes>
   );

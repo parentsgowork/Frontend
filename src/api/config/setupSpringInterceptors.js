@@ -25,13 +25,22 @@ export const setupSpringInterceptors = (apiInstance, navigate) => {
     async (error) => {
         const originalRequest = error.config;
         const { logout, login, refreshToken } = useAuthStore.getState();
+        const { response } = error;
 
+        // 401 + AUTH4015 시 즉시 로그아웃
+        if (response?.status === 401 && response?.data?.code === 'AUTH4015') {
+            window.alert('로그인이 필요합니다. 다시 로그인해 주세요.');
+            logout();
+            navigate('/login');
+            return Promise.reject(error); // 이후 로직에 전달
+        }
+
+        // 일반적인 401 → refresh 재발급
         if(error.response?.status === 401 && !originalRequest._retry) {
-            // 401 Forbidden 에러 발생 시 로그아웃 처리
             if(!refreshToken) {
                 console.warn('Refresh token not found. Logging out.');
                 logout();
-                navigate('/login');
+                navigate('/');
                 return Promise.reject(error);
             }
             if(isRefreshing) {
@@ -58,7 +67,7 @@ export const setupSpringInterceptors = (apiInstance, navigate) => {
                 queue.forEach((callback) => callback(null));
                 queue = [];
                 logout();
-                navigate('/login');
+                navigate('/');
             } finally {
                 isRefreshing = false;
             }

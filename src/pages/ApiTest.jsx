@@ -5,6 +5,7 @@ import confirmEmailVerification from "../api/feature/Auth/confirmEmailVerificati
 import signupWithEmail from "../api/feature/Auth/signupWithEmail";
 import loginWithEmail from "../api/feature/Auth/loginWithEmail";
 import reissueToken from "../api/feature/Auth/reissueToken";
+import getSeniorJobs from "../api/feature/Crawler/getSeniorJobs";
 
 const ApiTest = () => {
 
@@ -79,6 +80,16 @@ const ApiTest = () => {
         }
     }
 
+    // 크롤링
+    const handleGetSeniorJobs = async () => {
+        try {
+            const response = await getSeniorJobs();
+            console.log("크롤링 성공:", response);
+        } catch (error) {
+            console.error("크롤링 실패:", error);
+        }
+    }
+
     return (
         <>
             <h1>API 테스트 페이지</h1>
@@ -90,6 +101,10 @@ const ApiTest = () => {
                     <Button onClick={handleSignup} success={false}>회원가입</Button>
                     <Button onClick={handleLogin} success={false}>로그인</Button>
                     <Button onClick={handleReissueToken} success={false}>토큰 재발급</Button>
+                </ButtonContainer>
+                <SectionTitle>CRAWLER</SectionTitle>
+                <ButtonContainer>
+                    <Button onClick={handleGetSeniorJobs} success={false}>크롤링</Button>
                 </ButtonContainer>
             </Section>
         </>
