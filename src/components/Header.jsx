@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../constants/theme';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { useAuthStore } from '../stores/useAuthStore';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { isLoggedIn, logout } = useAuthStore();
+
+  const handleStartClick = () => {
+    navigate('/signup');
+  }
+
+  const handleLogoutClick = () => {
+    logout();
+    navigate('/');
+  }
 
   return (
     <>
@@ -18,14 +30,18 @@ const Header = () => {
         </Link>
         {/* Desktop Nav */}
         <Nav>
-          <NavItem href="#">구직 정보</NavItem>
-          <NavItem href="#">맞춤형 추천</NavItem>
-          <NavItem href="#">복지 정보</NavItem>
+          <NavItem href="#">재취업 가능성 분석</NavItem>
+          <NavItem href="#">채용 정보</NavItem>
           <NavItem href="#">교육 정보</NavItem>
-          <NavItem href="#">이력서 작성</NavItem>
+          <NavItem href="#">고용정책/복지 정보</NavItem>
+          <NavItem href="#">자기소개서 작성</NavItem>
         </Nav>
 
-        <StartButton>시작하기</StartButton>
+        {isLoggedIn ? (
+          <StartButton onClick={handleLogoutClick}>로그아웃</StartButton>
+        ) : (
+          <StartButton onClick={handleStartClick}>시작하기</StartButton>
+        )}
       </HeaderContainer>
 
       {/* Mobile Slide Menu */}
@@ -35,11 +51,11 @@ const Header = () => {
             <FaTimes />
           </CloseButton>
           <SlideNav>
-            <NavItem href="#">구직 정보</NavItem>
-            <NavItem href="#">맞춤형 추천</NavItem>
-            <NavItem href="#">복지 정보</NavItem>
+            <NavItem href="#">재취업 가능성 분석</NavItem>
+            <NavItem href="#">채용 정보</NavItem>
             <NavItem href="#">교육 정보</NavItem>
-            <NavItem href="#">이력서 작성</NavItem>
+            <NavItem href="#">고용정책/복지 정보</NavItem>
+            <NavItem href="#">자기소개서 작성</NavItem>
           </SlideNav>
         </SlideMenu>
       )}
