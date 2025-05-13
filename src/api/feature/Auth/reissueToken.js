@@ -14,7 +14,7 @@ const reissueToken = async (refreshToken) => {
       refreshToken: refreshToken
     });
     console.log("토큰 재발급 성공 응답:", res.data.result);
-    return res;
+    return res.data.result;
   } catch (error) {
     console.error("토큰 재발급 실패: ", error);
     if (error.response) {

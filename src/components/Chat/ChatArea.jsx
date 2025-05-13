@@ -18,7 +18,7 @@ const ChatArea = ({ messages, onSelect }) => {
 
                   {idx === messages.length - 1 &&
                     m.from === "bot" &&
-                    (m.text === "궁금한 교육 정보를 선택해주세요!" || "궁금한 고용 정책/복지 정보를 선택해주세요!")&& (
+                    (m.text === "궁금한 교육 정보를 선택해주세요!" || m.text === "궁금한 고용 정책/복지 정보를 선택해주세요!")&& (
                       <ButtonGroup>
                         {options.map((opt) => (
                           <OptionBtn

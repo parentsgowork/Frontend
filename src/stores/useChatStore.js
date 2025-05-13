@@ -3,8 +3,6 @@ import analyzeReemployment from "../api/feature/Rag/analyzeReemployment";
 import getSeniorJobs from "../api/feature/Crawler/getSeniorJobs";
 import searchEducationByCategory from "../api/feature/Rag/searchEducationByCategory";
 import recommendPolicyByCategory from "../api/feature/Rag/recommendPolicyByCategory";
-import { initResumeSession, answerResumeQuestion } from "../api/feature/Resume/resumeSession";
-import { getResumeResult, saveResume } from "../api/feature/Resume/resumeStorageAPI";
 
 
 const useChatStore = create((set) => ({
@@ -79,6 +77,7 @@ const useChatStore = create((set) => ({
         }
     },
 
+    // 채용 정보
     handleSearchJobInfo: async (page) => {
         try {
             const res = await getSeniorJobs(page);
@@ -98,13 +97,15 @@ const useChatStore = create((set) => ({
         }
     },
 
+    // 카테고리별 교육정보 검색
     handleSearchEducationInfo: async (category) => {
         try {
             const res = await searchEducationByCategory(category);
+            console.log("교육정보 API 응답:", res);
 
             set(() => ({
                 educationInfo: res,
-                cards: res,
+                cards: res.result,
             }))
         } catch (error) {
             console.error("교육정보 API 호출 실패:", error);
@@ -117,13 +118,15 @@ const useChatStore = create((set) => ({
         }
     },
 
+    // 카테고리별 정책정보 검색
     handleSearchPolicyInfo: async (category) => {
         try {
             const res = await recommendPolicyByCategory(category);
+            console.log("정책정보 API 응답:", res);
 
             set(() => ({
                 policyInfo: res,
-                cards: res,
+                cards: res.results,
             }))
         } catch (error) {
             console.error("정책정보 API 호출 실패:", error);
@@ -135,17 +138,6 @@ const useChatStore = create((set) => ({
             }))
         }
     },
-
-    
-    // 맞춤형 교육 정보 
-    setEducationInfo: (info) => set({ educationInfo: info }),
-
-    // 정책, 복지 정보 
-    setPolicyInfo: (info) => set({ policyInfo: info }),
-
-    // 자기소개서 
-    setResumeSessionId: (sessionId) => set({ resumeSessionId: sessionId }),
-    setResumeResult: (result) => set({ resumeResult: result }),
 }));
 
 export default useChatStore;

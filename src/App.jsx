@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { setupSpringInterceptors } from './api/config/setupSpringInterceptors';
+import { setupPythonInterceptors } from './api/config/setupPythonInterceptors';
 import springAPI from './api/config/springApi';
+import pythonAPI from './api/config/pythonApi';
 import { useAuthStore } from './stores/useAuthStore';
 import ApiTest from './pages/ApiTest';
 import Layout from './components/Layout';
@@ -20,6 +22,7 @@ const App = () => {
   useEffect(() => {
     useAuthStore.getState().restoreState();
     setupSpringInterceptors(springAPI, navigate);
+    setupPythonInterceptors(pythonAPI, navigate);
   }
   , [navigate]);
 

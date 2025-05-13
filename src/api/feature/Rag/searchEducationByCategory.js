@@ -13,7 +13,7 @@ const searchEducationByCategory = async (category) => {
       category,
     });
     console.log("교육 정보 조회 성공:", res);
-    return res;
+    return res.data;
   } catch (error) {
     console.error("교육 정보 조회 실패:", error);
     if (error.response) {

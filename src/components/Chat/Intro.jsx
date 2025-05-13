@@ -20,7 +20,7 @@ const Intro = ({ onOptionClick }) => {
             <Options>
                 {options.map((opt) => (
                 <OptionBtn key={opt.value} onClick={() => onOptionClick(opt.value)}>
-                    {opt}
+                    {opt.label}
                 </OptionBtn>
                 ))}
             </Options>

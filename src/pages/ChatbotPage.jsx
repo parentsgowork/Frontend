@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect }from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigationType } from "react-router-dom";
 import styled from "styled-components";
 import useChatStore from "../stores/useChatStore";
 import Intro from "../components/Chat/Intro";
@@ -11,7 +11,8 @@ import Loader from "../components/Loader";
 
 const ChatbotPage =()=> {
     const { topic: topicParam, category: categoryParam } = useParams();  
-    
+    const navigationType = useNavigationType();
+
     const topicMap = {
         job: "채용 정보",
         education: "교육 정보",
@@ -29,7 +30,7 @@ const ChatbotPage =()=> {
     const topicText = topicMap[topicParam];
     const categoryText = categoryMap[categoryParam];
   
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [inputText, setInputText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [infoCategory, setInfoCategory] = useState("");
@@ -45,9 +46,19 @@ const ChatbotPage =()=> {
     const closeModal = useChatStore((s) => s.closeModal);
     const handleReemploymentAnalysis = useChatStore((s) => s.handleReemploymentAnalysis);
     const jobPage = useChatStore((s) => s.jobPage);
-    const handleSearchJobInfo = useChatStore((s) => s.handleSearchJobInfo);
+    // const handleSearchJobInfo = useChatStore((s) => s.handleSearchJobInfo);
     const handleSearchEducationInfo = useChatStore((s) => s.handleSearchEducationInfo);
     const handleSearchPolicyInfo = useChatStore((s) => s.handleSearchPolicyInfo);
+
+    useEffect(() => {
+      console.log('topic:', topic);
+      console.log('category:', infoCategory);
+      console.log('messages:', messages);
+      console.log('cards:', cards);
+      console.log('modalContent:', modalContent);
+      console.log('jobPage:', jobPage);
+      console.log('sidebarOpen:', sidebarOpen);
+    },[topic, infoCategory, messages, cards, modalContent, jobPage, sidebarOpen]);
 
     // 채팅 영역 스크롤 참조
     const chatSectionRef = useRef(null);
@@ -68,16 +79,22 @@ const ChatbotPage =()=> {
 
     // 초기 라우팅 처리
     useEffect(() => {
-      if(!topicText) return;
-
-      if(topicParam) {
-        setTopic(topicParam);
-        handleOptionClick(topicParam, !!categoryParam);
+      if(topicParam && topicText) {
+        setTopic(topicText);
+        handleOptionClick(topicText, !!categoryParam);
+        // console.log('topic:', topic);
       }   
-      if (categoryParam) {
-        setInfoCategory(categoryParam);
+      if (categoryParam && categoryText) {
+        setInfoCategory(categoryText);
+        // console.log('category:', categoryText);
       }
-    }, [topicParam, categoryParam]);
+    }, []);
+
+    // useEffect(() => {
+    //   if (navigationType === "POP") {
+    //     window.location.reload();
+    //   }
+    // }, []);
 
     // 대화 주제 선택
     const handleOptionClick = async (option, isFromUrl = false) => {
@@ -136,15 +153,13 @@ const ChatbotPage =()=> {
 
     // 채용 정보 페이지 변경
     useEffect(() => {
-        if (topic === "채용 정보") {
-            (async () => {
-              try {
-                setIsLoading(true);
-                await handleSearchJobInfo(jobPage);
-              } finally {
-                setIsLoading(false);
-              }
-            })();
+        if (topic === "채용 정보" && jobPage !== null) {
+          (async () => {
+            setIsLoading(true);
+            await useChatStore.getState().handleSearchJobInfo(jobPage);
+            setIsLoading(false);
+          })();
+
         }
     }, [jobPage]);
 
@@ -175,7 +190,7 @@ const ChatbotPage =()=> {
                 ) : (
                     <ChatArea 
                       messages={messages} 
-                      onClick={(category) => setInfoCategory(category)}
+                      onSelect={(category) => setInfoCategory(category)}
                     />
                 )}
                 {isLoading && <Loader message = "답변을 생성 중입니다..."/>}
@@ -202,24 +217,27 @@ const ChatbotPage =()=> {
                 </SidebarHeader>
 
                 <CardList>
-                    {topic === "재취업 분석" ? (
-                      cards.map((card, idx) => (
-                        <ReemploymentCard
-                          key={card.id || idx}
-                          data={card}
-                        />
-                      ))
-                    ) : (
-                      cards.map((card) => (
-                        <InfoCard
-                          key={card.id}
-                          card={card}
-                          onClick={() => openModal(card)}
-                        />
-                      ))
-                    )}
+                    {Array.isArray(cards) && cards.length > 0 && (
+                      topic === "재취업 분석" ? (
+                        cards.map((card, idx) => (
+                          <ReemploymentCard
+                            key={card.id || idx}
+                            data={card}
+                          />
+                        ))
+                      ) : (
+                        cards.map((card) => (
+                          <InfoCard
+                            key={card.id}
+                            topic={topic}
+                            data={card}
+                            onClick={() => openModal(card)}
+                          />
+                        ))
+                    ))}
                 </CardList>
                 
+                {/* Pagination */}
                 {topic === "채용 정보" && (
                   <PaginationWrapper>
                     {[1, 2, 3, 4, 5].map((num) => (
