@@ -12,8 +12,8 @@ const recommendPolicyByCategory = async (category) => {
     const res = await pythonAPI.post("/api/policy/recommend", {
       category,
     });
-    console.log("정책 추천 성공:", res);
-    return res;
+    console.log("정책 추천 성공:", res.data);
+    return res.data;
   } catch (error) {
     console.error("정책 추천 실패:", error);
     if (error.response) {

@@ -9,7 +9,7 @@ import springAPI from "../../config/springApi";
  */
 const getSeniorJobs = async (page = 1) => {
   try {
-    const res = await springAPI.get(`/crawler/senior-jobs?page=${page}`);
+    const res = await springAPI.get(`/crawler/seniorJobs?page=${page}`);
     console.log("시니어 채용정보 응답:", res);
     return res;
   } catch (error) {

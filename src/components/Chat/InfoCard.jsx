@@ -1,12 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-const InfoCard = ({ card, onClick }) => {
+const InfoCard = ({ topic, data, onClick }) => {
     return(
         <CardContainer onClick={() => onClick(card)}>
-            <h4>{card.company}</h4>
-            <p>{card.position}</p>
-            <small>{card.summary}</small>
+            <Title>{data.title}</Title>
+            <Description>{data.description}</Description>
+            <LinkBtn onClick={(e) => {
+              e.stopPropagation();
+              window.open(data.url, "_blank");
+            }}>지원하기</LinkBtn>
         </CardContainer>
     )
 }
@@ -31,5 +34,35 @@ const CardContainer = styled.div`
   }
   small {
     color: #666;
+  }
+`;
+
+const Title = styled.h4`
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: 'Bold';
+  color: #1a3ec6;
+`;
+
+const Description = styled.p`
+  font-size: 0.9rem;
+  font-family: 'Regular';
+  color: #333;
+`;
+
+const LinkBtn = styled.button`
+  width: 100%;
+  background: #1a3ec6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+  margin-top: 10px;
+
+  &:hover {
+    background: #1877f2;
   }
 `;

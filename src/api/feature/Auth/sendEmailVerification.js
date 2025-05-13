@@ -20,7 +20,7 @@ const sendEmailVerification = async (email, type) => {
     console.log("인증 메일 전송 응답:", res);
     return res;
   } catch (error) {
-        console.error('인증 메일 전송 실패: ', error);
+    console.error('인증 메일 전송 실패: ', error);
 		if (error.response) {
 			//서버 응답이 있는 경우
 			console.error('응답 상태 코드: ', error.response.status);

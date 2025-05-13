@@ -30,11 +30,11 @@ const Header = () => {
         </Link>
         {/* Desktop Nav */}
         <Nav>
-          <NavItem href="#">재취업 가능성 분석</NavItem>
+          {/* <NavItem href="#">재취업 가능성 분석</NavItem> */}
           <NavItem href="#">채용 정보</NavItem>
           <NavItem href="#">교육 정보</NavItem>
           <NavItem href="#">고용정책/복지 정보</NavItem>
-          <NavItem href="#">자기소개서 작성</NavItem>
+          <NavItem href="#">자기소개서</NavItem>
         </Nav>
 
         {isLoggedIn ? (
@@ -51,11 +51,11 @@ const Header = () => {
             <FaTimes />
           </CloseButton>
           <SlideNav>
-            <NavItem href="#">재취업 가능성 분석</NavItem>
+            {/* <NavItem href="#">재취업 가능성 분석</NavItem> */}
             <NavItem href="#">채용 정보</NavItem>
             <NavItem href="#">교육 정보</NavItem>
             <NavItem href="#">고용정책/복지 정보</NavItem>
-            <NavItem href="#">자기소개서 작성</NavItem>
+            <NavItem href="#">자기소개서</NavItem>
           </SlideNav>
         </SlideMenu>
       )}
