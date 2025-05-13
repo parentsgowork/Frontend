@@ -10,7 +10,24 @@ import CardModal from "../components/Chat/CardModal";
 import Loader from "../components/Loader";
 
 const ChatbotPage =()=> {
-    const { topic: topicParam } = useParams();   
+    const { topic: topicParam, category: categoryParam } = useParams();  
+    
+    const topicMap = {
+        job: "채용 정보",
+        education: "교육 정보",
+        policy: "고용정책/복지 정보",
+        resume: "자기소개서",
+    };
+
+    const categoryMap = {
+      digital: "디지털 역량 교육",
+      training: "직업 훈련",
+      license: "자격증 과정",
+      other: "기타 교육",
+    };
+
+    const topicText = topicMap[topicParam];
+    const categoryText = categoryMap[categoryParam];
   
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [inputText, setInputText] = useState("");
@@ -49,15 +66,21 @@ const ChatbotPage =()=> {
         }
     }
 
+    // 초기 라우팅 처리
     useEffect(() => {
+      if(!topicText) return;
+
       if(topicParam) {
         setTopic(topicParam);
-        handleOptionClick(topicParam);
+        handleOptionClick(topicParam, !!categoryParam);
       }   
-    }, [topicParam]);
+      if (categoryParam) {
+        setInfoCategory(categoryParam);
+      }
+    }, [topicParam, categoryParam]);
 
     // 대화 주제 선택
-    const handleOptionClick = async (option) => {
+    const handleOptionClick = async (option, isFromUrl = false) => {
         setTopic(option);
         addMessage("user", option);
 
@@ -71,10 +94,14 @@ const ChatbotPage =()=> {
                 addMessage("bot", "채용 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
                 break;
             case "교육 정보":
-                addMessage("bot", "궁금한 교육 정보를 선택해주세요!");
+                if(!isFromUrl) {
+                  addMessage("bot", "궁금한 교육 정보를 선택해주세요!");
+                }
                 break;
             case "고용정책/복지 정보":
-                addMessage("bot", "고용정책/복지 정보를 가져옵니다...");
+                if(!isFromUrl) {
+                  addMessage("bot", "궁금한 고용 정책/복지 정보를 선택해주세요!");
+                }
                 break;
             case "자기소개서":
                 addMessage("bot", "자기소개서를 작성합니다...");

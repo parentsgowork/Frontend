@@ -11,8 +11,7 @@ const ChatCategorySelector = ({ dot = 0 }) => {
   };
 
   const helperTextByDot = [
-    '챗봇 도우미',
-    '맞춤 추천',
+    '일자리 추천',
     '복지 정보',
     '교육 정보',
     '이력서 작성',
@@ -20,13 +19,12 @@ const ChatCategorySelector = ({ dot = 0 }) => {
 
   const questionTextByDot = [
     '어떤 직종을 찾고 계신가요?',
-    '선호하는 근무 형태를 선택해주세요.',
     '관심 있는 복지 분야를 선택해주세요.',
     '희망하는 교육 분야를 선택해주세요.',
     '어떤 경력을 강조하고 싶으신가요?'
   ]
 
-  const helperText = helperTextByDot[dot] || '챗봇 도우미';
+  const helperText = helperTextByDot[dot] || '일자리 추천';
   const question = questionTextByDot[dot] || '어떤 직종을 찾고 계신가요?';
 
   return (
@@ -39,10 +37,38 @@ const ChatCategorySelector = ({ dot = 0 }) => {
       <Question>{question}</Question>
 
       <ButtonList>
-        <CategoryButton onClick={() => handleNavigate('/#')}>사무직</CategoryButton>
-        <CategoryButton onClick={() => handleNavigate('/#')}>서비스직</CategoryButton>
-        <CategoryButton onClick={() => handleNavigate('/#')}>기술직</CategoryButton>
-        <CategoryButton onClick={() => handleNavigate('/#')}>판매직</CategoryButton>
+        {dot === 0 ? (
+          <>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>사무직</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>서비스직</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>기술직</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>판매직</CategoryButton>
+          </>
+        ):
+        dot === 1 ? (
+          <>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/education/digital')}>디지털 역량 교육</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/education/training')}>직업 훈련</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/education/license')}>자격증 과정</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/education/other')}>기타 교육</CategoryButton>
+          </>
+        ):
+        dot === 2 ? (
+          <>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/policy/digital')}>디지털 역량 교육</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/policy/training')}>직업 훈련</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/policy/license')}>자격증 과정</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/policy/other')}>기타 교육</CategoryButton>
+          </>
+        ):
+        dot === 3 ? (
+          <>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/resume')}>관리 및 리더십 경험</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/resume')}>전문 기술 및 자격증</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/resume')}>고객 서비스 경험</CategoryButton>
+            <CategoryButton onClick={() => handleNavigate('/chatbot/resume')}>프로젝트 성과</CategoryButton>
+          </>
+        ) : null}
       </ButtonList>
 
       <Footer>

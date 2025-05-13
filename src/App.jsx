@@ -30,7 +30,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/chatbot/:topic?" element={<ChatbotPage />} />
+        <Route path="/chatbot/:topic?/:category?" element={<ChatbotPage />} />
       </Route>
     </Routes>
   );
