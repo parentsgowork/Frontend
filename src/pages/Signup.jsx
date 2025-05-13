@@ -222,6 +222,9 @@ const SignupForm = () => {
                 </FormRow>
             </Section>
 
+            <BottomText>
+                계정이 없으신가요? <JoinLink to="/signup">회원가입</JoinLink>
+            </BottomText>
             <SubmitButton type="submit">가입하기</SubmitButton>
         </FormContainer>
     </PageWrapper>
@@ -323,4 +326,10 @@ const SubmitButton = styled.button`
     cursor: pointer;
     font-weight: bold;
     margin-top: 20px;
+`;
+
+const BottomText = styled.div`
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  text-align: center;
 `;
