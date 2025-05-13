@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import RegionDropdown from "../components/SignUp/RegionDropdown";
 import EducationDropdown from "../components/SignUp/EducationDropdown";
@@ -223,7 +223,7 @@ const SignupForm = () => {
             </Section>
 
             <BottomText>
-                계정이 없으신가요? <JoinLink to="/signup">회원가입</JoinLink>
+                계정이 있으신가요? <JoinLink to="/login">로그인</JoinLink>
             </BottomText>
             <SubmitButton type="submit">가입하기</SubmitButton>
         </FormContainer>
@@ -332,4 +332,10 @@ const BottomText = styled.div`
   margin-top: 1.2rem;
   font-size: 0.9rem;
   text-align: center;
+`;
+
+const JoinLink = styled(Link)`
+  color: #1a73e8;
+  text-decoration: none;
+  margin-left: 0.2rem;
 `;
