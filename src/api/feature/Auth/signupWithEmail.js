@@ -16,6 +16,17 @@ import springAPI from "../../config/springApi"; // 또는 axios 직접 구성 �
  * @param {number} signupData.career - 경력 (숫자)
  * @param {'HIGH_SCHOOL'|'ASSOCIATE'|'BACHELOR'|'MASTER'|'DOCTOR'} signupData.finalEdu - 최종 학력
  * @returns {Promise<AxiosResponse>} 응답 객체
+ *
+ * 응답 예시: res.data
+ * {
+ *   isSuccess: true,
+ *   code: "COMMON200",
+ *   message: "성공입니다.",
+ *   result: {
+ *     accessToken: "...",
+ *     refreshToken: "..."
+ *   }
+ * }
  */
 
 const signupWithEmail = async (signupData) => {
@@ -23,7 +34,7 @@ const signupWithEmail = async (signupData) => {
     console.log("회원가입 요청 데이터:", signupData);
     const res = await springAPI.post("/auth/signup", signupData);
     console.log("회원가입 성공 응답:", res);
-    return res;
+    return res.data.result;
   } catch (error) {
     console.error("회원가입 실패: ", error);
     if (error.response) {

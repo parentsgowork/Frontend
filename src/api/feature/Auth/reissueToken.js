@@ -13,7 +13,7 @@ const reissueToken = async (refreshToken) => {
     const res = await springAPI.post("/auth/reissue", {
       refreshToken: refreshToken
     });
-    console.log("토큰 재발급 성공 응답:", res);
+    console.log("토큰 재발급 성공 응답:", res.data.result);
     return res;
   } catch (error) {
     console.error("토큰 재발급 실패: ", error);

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import useAuthStore from "../stores/useAuthStore";
 
 import sendEmailVerification from "../api/feature/Auth/sendEmailVerification";
 import confirmEmailVerification from "../api/feature/Auth/confirmEmailVerification";
@@ -20,6 +21,8 @@ import { getResumeResult, saveResume, getUserResumes } from "../api/feature/Resu
 
 const ApiTest = () => {
 
+    const { login } = useAuthStore();
+
     // 이메일 인증코드 전송
     const handleSendEmail = async () => {
         const email = "muwingky@naver.com";
@@ -35,7 +38,7 @@ const ApiTest = () => {
     // 인증코드 확인
     const handleConfirmEmail = async () => {
         const email = "muwingky@naver.com";
-        const authCode = "GbZZucFw";
+        const authCode = "U1ZjstDR";
         try {
             const response = await confirmEmailVerification(email, authCode);
             console.log("인증 코드 확인 성공:", response);
@@ -70,11 +73,12 @@ const ApiTest = () => {
     const handleLogin = async () => {
         const loginData = {
             email: "muwingky@naver.com",
-            password: "12345678"
+            password: "12341234"
         };
         try {
             const response = await loginWithEmail(loginData);
-            console.log("로그인 성공:", response);
+            const { accessToken, refreshToken } = response;
+            login(accessToken, refreshToken);
         } catch (error) {
             console.error("로그인 실패:", error);
         }
@@ -82,7 +86,7 @@ const ApiTest = () => {
 
     // 토큰 재발급
     const handleReissueToken = async () => {
-        const refreshToken = "your_refresh_token_here"; 
+        const refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NTIzMTAzMjd9.EkDp0WJHS8Wm_3pW1y07UpU3I_0fLq5MUdDp17t31MY"; 
         try {
             const response = await reissueToken(refreshToken);
             console.log("토큰 재발급 성공:", response);
@@ -106,8 +110,8 @@ const ApiTest = () => {
         const passwordData = {
             isVerified: true,
             email: "muwingky@naver.com",
-            password: "newpassword123",
-            passwordCheck: "newpassword123"
+            password: "12345678",
+            passwordCheck: "12345678"
         };
         try {
             const response = await changePassword(passwordData);
@@ -324,16 +328,16 @@ const ApiTest = () => {
                 <ButtonContainer>
                     <Button onClick={handleSendEmail} success={true}>인증 메일 전송</Button>
                     <Button onClick={handleConfirmEmail} success={true}>인증 코드 확인</Button>
-                    <Button onClick={handleSignup} success={false}>회원가입</Button>
-                    <Button onClick={handleLogin} success={false}>로그인</Button>
-                    <Button onClick={handleReissueToken} success={false}>토큰 재발급</Button>
+                    <Button onClick={handleSignup} success={true}>회원가입</Button>
+                    <Button onClick={handleLogin} success={true}>로그인</Button>
+                    <Button onClick={handleReissueToken} success={true}>토큰 재발급</Button>
                     <Button onClick={handleDeactivateUser} success={false}>회원 탈퇴</Button>
                     <Button onClick={handleChangePassword} success={false}>비밀번호 변경</Button>
                 </ButtonContainer>
 
                 <SectionTitle>CRAWLER</SectionTitle>
                 <ButtonContainer>
-                    <Button onClick={handleGetSeniorJobs} success={false}>크롤링</Button>
+                    <Button onClick={handleGetSeniorJobs} success={false}>채용정보</Button>
                 </ButtonContainer>
 
                 <SectionTitle>RAG</SectionTitle>

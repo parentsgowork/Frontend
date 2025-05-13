@@ -1,17 +1,36 @@
 import React, { useState, useRef, useEffect }from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import useChatStore from "../stores/useChatStore";
 import Intro from "../components/Chat/Intro";
 import ChatArea from "../components/Chat/ChatArea";
+import ReemploymentCard from "../components/Chat/ReemploymentCard";
 import InfoCard from "../components/Chat/InfoCard";
 import CardModal from "../components/Chat/CardModal";
+import Loader from "../components/Loader";
 
 const ChatbotPage =()=> {
+    const { topic: topicParam } = useParams();   
+  
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [topic, setTopic] = useState("대화주제");
     const [inputText, setInputText] = useState("");
-    const [messages, setMessages] = useState([]);
-    const [cards, setCards] = useState(dummyCards);
-    const [modalContent, setModalContent] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [infoCategory, setInfoCategory] = useState("");
+
+    // 전역 상태
+    const topic = useChatStore((s) => s.topic);
+    const setTopic = useChatStore((s) => s.setTopic);
+    const messages = useChatStore((s) => s.messages);
+    const addMessage = useChatStore((s) => s.addMessage);
+    const cards = useChatStore((s) => s.cards);
+    const modalContent = useChatStore((s) => s.modalContent);
+    const openModal = useChatStore((s) => s.openModal);
+    const closeModal = useChatStore((s) => s.closeModal);
+    const handleReemploymentAnalysis = useChatStore((s) => s.handleReemploymentAnalysis);
+    const jobPage = useChatStore((s) => s.jobPage);
+    const handleSearchJobInfo = useChatStore((s) => s.handleSearchJobInfo);
+    const handleSearchEducationInfo = useChatStore((s) => s.handleSearchEducationInfo);
+    const handleSearchPolicyInfo = useChatStore((s) => s.handleSearchPolicyInfo);
 
     // 채팅 영역 스크롤 참조
     const chatSectionRef = useRef(null);
@@ -23,41 +42,102 @@ const ChatbotPage =()=> {
         }
     }, [messages]);
 
-    // 대화 주제 선택
-    const handleOptionClick = (option) => {
-        setTopic(option);
-        setMessages((prev) => [
-            ...prev,
-            { text: option, from: "user" },
-        ]);
-        // 옵션에 맞는 api 호출
-    }
-
-    // 메세지 전송(엔터터)
+    // 메세지 전송(엔터)
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             handleSend();
         }
     }
 
+    useEffect(() => {
+      if(topicParam) {
+        setTopic(topicParam);
+        handleOptionClick(topicParam);
+      }   
+    }, [topicParam]);
+
+    // 대화 주제 선택
+    const handleOptionClick = async (option) => {
+        setTopic(option);
+        addMessage("user", option);
+
+        // topic에 따른 함수 호출
+        switch (option) {
+            case "재취업 분석":
+                addMessage("bot", "타겟 연령대, 선호하는 직업군을 알려주세요! ex) '50대, 광업, 남성 재취업 가능성이 궁금해.'");
+                break;
+            case "채용 정보":
+                await handleSearchJobInfo(1);
+                addMessage("bot", "채용 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
+                break;
+            case "교육 정보":
+                addMessage("bot", "궁금한 교육 정보를 선택해주세요!");
+                break;
+            case "고용정책/복지 정보":
+                addMessage("bot", "고용정책/복지 정보를 가져옵니다...");
+                break;
+            case "자기소개서":
+                addMessage("bot", "자기소개서를 작성합니다...");
+                break;
+            default:
+                break;
+        }
+    
+    }
+
     // 메세지 전송
-    const handleSend = () => {
-        if (inputText.trim() === "") return;
-        setMessages((prev) => [
-            ...prev,
-            { text: inputText, from: "user" },
-        ]);
+    const handleSend = async () => {
+        if (inputText.trim() === "" || !inputText.trim()) return;
+        addMessage("user", inputText);
+
+        // 재취업 분석
+        if (
+            topic === "재취업 분석" &&
+            messages.length > 0 &&
+            messages[messages.length - 1].from === "bot"
+        ) {
+          try {
+            setIsLoading(true);
+            await handleReemploymentAnalysis(inputText);
+          } finally {
+            setIsLoading(false);
+          }
+        }
+
         setInputText("");
     }
 
-    // 카드 클릭 시 모달 열기, 닫기
-    const handleCardClick = (card) => {
-        setModalContent(card);
-    }
+    // 채용 정보 페이지 변경
+    useEffect(() => {
+        if (topic === "채용 정보") {
+            (async () => {
+              try {
+                setIsLoading(true);
+                await handleSearchJobInfo(jobPage);
+              } finally {
+                setIsLoading(false);
+              }
+            })();
+        }
+    }, [jobPage]);
 
-    const closeModal = () => {
-        setModalContent(null);
-    }
+    // 교육 정보, 고용정책/복지 정보에서 카테고리 선택 시 결과 호출
+    useEffect(() => {
+      (async () => {
+        try{
+          setIsLoading(true);
+          if (topic === "교육 정보" && infoCategory) {
+              handleSearchEducationInfo(infoCategory);
+              addMessage("bot", "교육 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
+          } else if (topic === "고용정책/복지 정보") {
+              handleSearchPolicyInfo(infoCategory);
+              addMessage("bot", "고용정책/복지 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+    }, [infoCategory]);
 
     return (
         <Wrapper>
@@ -66,8 +146,13 @@ const ChatbotPage =()=> {
                 {messages.length === 0 ? (
                     <Intro onOptionClick={handleOptionClick} />
                 ) : (
-                    <ChatArea messages={messages} />
+                    <ChatArea 
+                      messages={messages} 
+                      onClick={(category) => setInfoCategory(category)}
+                    />
                 )}
+                {isLoading && <Loader message = "답변을 생성 중입니다..."/>}
+
                 <InputBar>
                     <ChatInput
                         value={inputText}
@@ -90,14 +175,38 @@ const ChatbotPage =()=> {
                 </SidebarHeader>
 
                 <CardList>
-                    {cards.map((card) => (
-                        <InfoCard
-                            key={card.id}
-                            card={card}
-                            onClick={() => handleCardClick(card)}
+                    {topic === "재취업 분석" ? (
+                      cards.map((card, idx) => (
+                        <ReemploymentCard
+                          key={card.id || idx}
+                          data={card}
                         />
-                    ))}
+                      ))
+                    ) : (
+                      cards.map((card) => (
+                        <InfoCard
+                          key={card.id}
+                          card={card}
+                          onClick={() => openModal(card)}
+                        />
+                      ))
+                    )}
                 </CardList>
+                
+                {topic === "채용 정보" && (
+                  <PaginationWrapper>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <PageBtn
+                        key={num}
+                        active={jobPage === num}
+                        onClick={() => useChatStore.getState().setJobPage(num)}
+                      >
+                        {num}
+                      </PageBtn>
+                    ))}
+                  </PaginationWrapper>
+                )}
+            
             </Sidebar>
 
             {/* ➡️ Modal */}
@@ -108,29 +217,29 @@ const ChatbotPage =()=> {
 
 export default ChatbotPage;
 
-const dummyCards = [
-  {
-    id: 1,
-    company: "네이버",
-    position: "프론트엔드 개발자",
-    summary: "React, TypeScript 경험 필수",
-    detail: "상세 JD, 우대사항 등"
-  },
-  {
-    id: 2,
-    company: "카카오",
-    position: "백엔드 개발자",
-    summary: "Java, Spring Boot 경력자 우대",
-    detail: "상세 JD, 복지, 연봉 등"
-  },
-  {
-    id: 3,
-    company: "라인",
-    position: "풀스택 개발자",
-    summary: "Node.js, React 개발 경험",
-    detail: "협업문화, 기술스택 설명"
-  }
-];
+// const dummyCards = [
+//   {
+//     id: 1,
+//     company: "네이버",
+//     position: "프론트엔드 개발자",
+//     summary: "React, TypeScript 경험 필수",
+//     detail: "상세 JD, 우대사항 등"
+//   },
+//   {
+//     id: 2,
+//     company: "카카오",
+//     position: "백엔드 개발자",
+//     summary: "Java, Spring Boot 경력자 우대",
+//     detail: "상세 JD, 복지, 연봉 등"
+//   },
+//   {
+//     id: 3,
+//     company: "라인",
+//     position: "풀스택 개발자",
+//     summary: "Node.js, React 개발 경험",
+//     detail: "협업문화, 기술스택 설명"
+//   }
+// ];
 
 const Wrapper = styled.div`
     position: relative;
@@ -242,4 +351,29 @@ const CardList = styled.div`
   flex-direction: column;
   gap: 12px;
   overflow-y: auto;
+`;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0;
+  border-top: 1px solid #eee;
+  background: #fff;
+`;
+
+const PageBtn = styled.button`
+  background: ${({ active }) => (active ? "#1a3ec6" : "#f0f0f0")};
+  color: ${({ active }) => (active ? "#fff" : "#333")};
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #1a3ec6;
+    color: #fff;
+  }
 `;

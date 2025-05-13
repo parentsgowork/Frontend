@@ -1,6 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
+const educationOptions = [
+  "디지털 역량 교육",
+  "직업 훈련",
+  "자격증 과정",
+  "기타 교육"
+];
+
 const ChatArea = ({ messages }) => {
     return(
         <ChatBox>

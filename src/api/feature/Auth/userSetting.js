@@ -28,11 +28,19 @@ export const deactivateUser = async () => {
  */
 export const changePassword = async (payload) => {
   try {
+    console.log('payload:', payload);
     const res = await springAPI.patch("/users/password", payload);
     console.log("비밀번호 변경 성공:", res);
     return res;
   } catch (error) {
-    console.error("비밀번호 변경 실패:", error);
-    throw error;
+    console.error("비밀번호 변경 실패: ", error);
+    if (error.response) {
+      console.error("응답 상태 코드: ", error.response.status);
+      console.error("응답 데이터:", error.response.data);
+    } else if (error.request) {
+      console.error("응답 없음: ", error.request);
+    } else {
+      console.error("요청 설정 오류: ", error.message);
+    }
   }
 };

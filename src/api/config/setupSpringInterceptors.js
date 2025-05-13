@@ -53,10 +53,13 @@ export const setupSpringInterceptors = (apiInstance, navigate) => {
             isRefreshing = true;
 
             try {
-                const { data } = await reissueToken(refreshToken);
-                const { accessToken: newAT, refreshToken: newRT } = data.result ?? data;
+                // const { data } = await reissueToken(refreshToken);
+                // const { accessToken: newAT, refreshToken: newRT } = data.result ?? data;
 
-                login(newAT, newRT);
+                const { accessToken: newAT } = await reissueToken(refreshToken);
+                console.log('[🔄 accessToken 갱신됨]', newAT);
+                login(newAT, refreshToken);
+                
                 queue.forEach((callback) => callback(newAT));
                 queue = [];
 
