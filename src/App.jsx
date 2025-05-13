@@ -34,9 +34,9 @@ const App = () => {
         <Route path="/api-test" element={<ApiTest />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />} />
 
         {/* REQUIRED AUTH */}
-        <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
         <Route path="/chatbot/:topic?/:category?" element={<RequireAuth><ChatbotPage /></RequireAuth>} />
       </Route>
     </Routes>
