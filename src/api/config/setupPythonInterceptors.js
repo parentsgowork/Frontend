@@ -1,7 +1,7 @@
 import useAuthStore from "../../stores/useAuthStore";
 import reissueToken from "../feature/Auth/reissueToken";
 
-export const setupSpringInterceptors = (apiInstance, navigate) => {
+export const setupPythonInterceptors = (apiInstance, navigate) => {
     // 요청 인터셉터
     apiInstance.interceptors.request.use(
         (config) => {

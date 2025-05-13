@@ -24,7 +24,7 @@ const Login = () => {
 
     try {
       const res = await loginWithEmail(form);
-      const { accessToken, refreshToken } = res.data.result;
+      const { accessToken, refreshToken } = res;
       login(accessToken, refreshToken);
       navigate('/'); // 홈 또는 대시보드로 이동
     } catch  {

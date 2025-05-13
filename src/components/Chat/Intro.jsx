@@ -2,6 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import exampleImage from '../../assets/images/metamong.png';
 
+const options = [
+  { label: "재취업 가능성을 알고 싶어요.", value: "재취업 분석" }, // 실제 응답: "재취업 분석"
+  { label: "채용 정보가 궁금해요.", value: "채용 정보" },           // 실제 응답: "채용 정보"
+  { label: "교육 정보가 궁금해요.", value: "교육 정보" },           // 실제 응답: "교육 정보"
+  { label: "고용정책/복지 정보가 궁금해요.", value: "고용정책/복지 정보" }, // 실제 응답: "고용정책/복지 정보"
+  { label: "자기소개서를 작성하고 싶어요.", value: "자기소개서" }, // 실제 응답: "자기소개서"
+];
+
 const Intro = ({ onOptionClick }) => {
 
     return(
@@ -10,15 +18,9 @@ const Intro = ({ onOptionClick }) => {
             <br></br>
             <Greeting>안녕하세요! 어떤 도움이 필요하신가요?</Greeting>
             <Options>
-                {[
-                "재취업 가능성을 알고 싶어요.",
-                "채용 정보가 궁금해요.",
-                "교육 정보가 궁금해요.",
-                "고용정책/복지 정보가 궁금해요.",
-                "자기소개서를 작성하고 싶어요.",
-                ].map((opt) => (
-                <OptionBtn key={opt} onClick={() => onOptionClick(opt)}>
-                    {opt}
+                {options.map((opt) => (
+                <OptionBtn key={opt.value} onClick={() => onOptionClick(opt.value)}>
+                    {opt.label}
                 </OptionBtn>
                 ))}
             </Options>
