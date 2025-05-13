@@ -10,10 +10,6 @@ const Header = () => {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useAuthStore();
 
-  const handleStartClick = () => {
-    navigate('/signup');
-  }
-
   const handleLogoutClick = () => {
     logout();
     navigate('/');
@@ -40,7 +36,11 @@ const Header = () => {
         {isLoggedIn ? (
           <StartButton onClick={handleLogoutClick}>로그아웃</StartButton>
         ) : (
-          <StartButton onClick={handleStartClick}>시작하기</StartButton>
+          <>
+            <StartButton onClick={() => navigate('/login')}>로그인</StartButton>
+            <StartButton onClick={() => navigate('/signup')}>시작하기</StartButton>
+          </>
+          
         )}
       </HeaderContainer>
 
