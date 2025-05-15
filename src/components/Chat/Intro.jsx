@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import exampleImage from '../../assets/images/metamong.png';
+import chatbotImage from '../../assets/images/chatbot.png';
 
 const options = [
   { label: "재취업 가능성을 알고 싶어요.", value: "재취업 분석" }, // 실제 응답: "재취업 분석"
@@ -14,7 +15,7 @@ const Intro = ({ onOptionClick }) => {
 
     return(
         <IntroBox>
-            <RobotImg src={exampleImage} alt="robot" />
+            <RobotImg src={chatbotImage} alt="robot" />
             <br></br>
             <Greeting>안녕하세요! 어떤 도움이 필요하신가요?</Greeting>
             <Options>

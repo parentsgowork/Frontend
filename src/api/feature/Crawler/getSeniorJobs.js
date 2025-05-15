@@ -1,19 +1,18 @@
 // src/api/Crawler/getSeniorJobs.js
-import springAPI from "../../config/springApi";
+import pythonApi from "../../config/pythonApi";
 
 /**
- * 시니어(50세 이상) 채용정보 조회 API
- * 
- * @param {number} page - 조회할 페이지 번호 (기본값: 1)
- * @returns {Promise<AxiosResponse>} 시니어 채용정보 리스트
+ * 사용자 맞춤 구직 추천 API
+ *
+ * @returns {Promise<AxiosResponse>} 사용자 조건 기반의 구직 정보 리스트
  */
-const getSeniorJobs = async (page = 1) => {
+const getSeniorJobs = async () => {
   try {
-    const res = await springAPI.get(`/crawler/seniorJobs?page=${page}`);
-    console.log("시니어 채용정보 응답:", res);
+    const res = await pythonApi.get("/api/job/recommend");
+    console.log("사용자 맞춤 구직 추천 응답:", res);
     return res;
   } catch (error) {
-    console.error("시니어 채용정보 조회 실패:", error);
+    console.error("사용자 맞춤 구직 추천 조회 실패:", error);
     if (error.response) {
       console.error("응답 상태 코드:", error.response.status);
       console.error("응답 데이터:", error.response.data);

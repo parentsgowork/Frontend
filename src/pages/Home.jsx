@@ -5,6 +5,26 @@ import Footer from '../components/Footer';
 import ChatCategorySelector from '../components/Home/ChatCategorySelector';
 import exampleImage from '../assets/images/metamong.png'; // 예시 이미지 경로
 import { theme } from '../constants/theme';
+import homeJobImage from '../assets/images/homeJob.png'; // 예시 이미지 경로
+import homeEducationImage from '../assets/images/homeEducation.png'; // 예시 이미지 경로
+import homePolicyImage from '../assets/images/homePolicy.png'; // 예시 이미지 경로
+import homeResumeImage from '../assets/images/homeResume.png'; // 예시 이미지 경로
+
+const getDotImage = (dot) => {
+  switch (dot) {
+    case 0:
+      return homeJobImage;
+    case 1:
+      return homeEducationImage;
+    case 2:
+      return homePolicyImage;
+    case 3:
+      return homeResumeImage;
+    default:
+      return null;
+  }
+};
+
 
 const Home = () => {
   const serviceSectionRef = React.useRef(null);
@@ -88,7 +108,8 @@ const Home = () => {
           <Section key={idx} style={item.bg ? { background: item.bg } : {}}>
             <ChatbotInfo>
               <ImageBox>
-                <img src={exampleImage} alt="예시 이미지" />
+                {/* <img src={exampleImage} alt="예시 이미지" /> */}
+                <img src={getDotImage(item.dot)} alt={`${item.label} 이미지`} />
               </ImageBox>
               <TextBox>
                 <ChatLabel>{item.label}</ChatLabel>

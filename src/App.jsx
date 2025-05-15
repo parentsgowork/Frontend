@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import SignupForm from './pages/Signup';
 import Login from './pages/Login';
 import ChatbotPage from './pages/ChatbotPage';
+import BookmarkPage from './pages/BookmarkPage';
 import RequireAuth from './components/RequireAuth';
 
 
@@ -38,6 +39,7 @@ const App = () => {
 
         {/* REQUIRED AUTH */}
         <Route path="/chatbot/:topic?/:category?" element={<RequireAuth><ChatbotPage /></RequireAuth>} />
+        <Route path="/bookmark/:topic" element={<RequireAuth><BookmarkPage /></RequireAuth>} />
       </Route>
     </Routes>
   );
