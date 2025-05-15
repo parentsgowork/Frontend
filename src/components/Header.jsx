@@ -36,10 +36,10 @@ const Header = () => {
         {isLoggedIn ? (
           <StartButton onClick={handleLogoutClick}>로그아웃</StartButton>
         ) : (
-          <>
+          <ButtonWrapper>
             <StartButton onClick={() => navigate('/login')}>로그인</StartButton>
             <StartButton onClick={() => navigate('/signup')}>시작하기</StartButton>
-          </>
+          </ButtonWrapper>
           
         )}
       </HeaderContainer>
@@ -103,6 +103,12 @@ const NavItem = styled.a`
   &:hover {
     color: #0b59c4;
   }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 `;
 
 const StartButton = styled.button`
