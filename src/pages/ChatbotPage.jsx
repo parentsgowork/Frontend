@@ -32,7 +32,6 @@ const ChatbotPage =()=> {
   
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [inputText, setInputText] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const [infoCategory, setInfoCategory] = useState("");
 
     // 전역 상태
@@ -44,6 +43,7 @@ const ChatbotPage =()=> {
     const modalContent = useChatStore((s) => s.modalContent);
     const openModal = useChatStore((s) => s.openModal);
     const closeModal = useChatStore((s) => s.closeModal);
+    const isLoading = useChatStore((s) => s.isLoading);
     const handleReemploymentAnalysis = useChatStore((s) => s.handleReemploymentAnalysis);
     const jobPage = useChatStore((s) => s.jobPage);
     // const handleSearchJobInfo = useChatStore((s) => s.handleSearchJobInfo);
@@ -107,7 +107,7 @@ const ChatbotPage =()=> {
                 addMessage("bot", "타겟 연령대, 선호하는 직업군을 알려주세요! ex) '50대, 광업, 남성 재취업 가능성이 궁금해.'");
                 break;
             case "채용 정보":
-                await handleSearchJobInfo(1);
+                await useChatStore.getState().handleSearchJobInfo(1);
                 addMessage("bot", "채용 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
                 break;
             case "교육 정보":
@@ -140,12 +140,7 @@ const ChatbotPage =()=> {
             messages.length > 0 &&
             messages[messages.length - 1].from === "bot"
         ) {
-          try {
-            setIsLoading(true);
-            await handleReemploymentAnalysis(inputText);
-          } finally {
-            setIsLoading(false);
-          }
+          await handleReemploymentAnalysis(inputText);
         }
 
         setInputText("");
@@ -155,9 +150,7 @@ const ChatbotPage =()=> {
     useEffect(() => {
         if (topic === "채용 정보" && jobPage !== null) {
           (async () => {
-            setIsLoading(true);
             await useChatStore.getState().handleSearchJobInfo(jobPage);
-            setIsLoading(false);
           })();
 
         }
@@ -167,7 +160,7 @@ const ChatbotPage =()=> {
     useEffect(() => {
       (async () => {
         try{
-          setIsLoading(true);
+          // setIsLoading(true);
           if (topic === "교육 정보" && infoCategory) {
               handleSearchEducationInfo(infoCategory);
               addMessage("bot", "교육 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
@@ -176,7 +169,7 @@ const ChatbotPage =()=> {
               addMessage("bot", "고용정책/복지 정보를 불러왔습니다. 사이드 바를 열어서 확인해주세요!");
           }
         } finally {
-          setIsLoading(false);
+          // setIsLoading(false);
         }
       })();
     }, [infoCategory]);
@@ -255,7 +248,7 @@ const ChatbotPage =()=> {
             </Sidebar>
 
             {/* ➡️ Modal */}
-            {modalContent && <CardModal card={modalContent} onClose={closeModal} />}
+            {modalContent && <CardModal topic = {topic} card={modalContent} onClose={closeModal} />}
         </Wrapper>
     )
 }
