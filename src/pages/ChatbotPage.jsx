@@ -333,7 +333,8 @@ const InputBar = styled.div`
     padding: 10px 12px;
     gap: 8px;
     position: absolute;
-    bottom: 20px;  
+    bottom: 20px;
+    left: 35px;  
 `;
 
 const ChatInput = styled.input`
