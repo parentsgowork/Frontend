@@ -22,14 +22,14 @@ const Header = () => {
           <FaBars />
         </MobileMenuButton>
         <Link to="/">
-          <Logo>다시 일해!</Logo>
+          <Logo>다시일해!</Logo>
         </Link>
         {/* Desktop Nav */}
         <Nav>
           {/* <NavItem href="#">재취업 가능성 분석</NavItem> */}
-          <NavItem href="#">채용 정보</NavItem>
-          <NavItem href="#">교육 정보</NavItem>
-          <NavItem href="#">고용정책/복지 정보</NavItem>
+          <NavItem to="/bookmark/job">채용 정보</NavItem>
+          <NavItem to="/bookmark/education">교육 정보</NavItem>
+          <NavItem to="/bookmark/policy">고용정책/복지 정보</NavItem>
           <NavItem href="#">자기소개서</NavItem>
         </Nav>
 
@@ -52,9 +52,9 @@ const Header = () => {
           </CloseButton>
           <SlideNav>
             {/* <NavItem href="#">재취업 가능성 분석</NavItem> */}
-            <NavItem href="#">채용 정보</NavItem>
-            <NavItem href="#">교육 정보</NavItem>
-            <NavItem href="#">고용정책/복지 정보</NavItem>
+            <NavItem to="/bookmark/job">채용 정보</NavItem>
+            <NavItem to="/bookmark/education">교육 정보</NavItem>
+            <NavItem to="/bookmark/policy">고용정책/복지 정보</NavItem>
             <NavItem href="#">자기소개서</NavItem>
           </SlideNav>
         </SlideMenu>
@@ -93,7 +93,7 @@ const Nav = styled.nav`
   }
 `;
 
-const NavItem = styled.a`
+const NavItem = styled(Link)`
   color: #1a73e8;
   text-decoration: none;
   font-size: 1rem;
