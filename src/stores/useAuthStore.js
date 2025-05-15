@@ -4,6 +4,7 @@ export const useAuthStore = create((set) => ({
     accessToken : null,
     refreshToken : null,
     isLoggedIn : false,
+    isInitialized : false,
 
     // 초기상태 복원
     restoreState: () => {
@@ -14,6 +15,7 @@ export const useAuthStore = create((set) => ({
             accessToken : accessToken || null,
             refreshToken : refreshToken || null,
             isLoggedIn : !!accessToken,
+            isInitialized : true,
         })
     },
 
