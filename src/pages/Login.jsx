@@ -68,7 +68,7 @@ const Login = () => {
             {/* <input type="checkbox" id="keepLogin" />
             <label htmlFor="keepLogin"> 로그인 상태 유지</label> */}
           </div>
-          <FindLink href="#">비밀번호 찾기</FindLink>
+          {/* <FindLink href="#">비밀번호 찾기</FindLink> */}
         </Options>
 
         {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}

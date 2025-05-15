@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import RegionDropdown from "../components/SignUp/RegionDropdown";
 import EducationDropdown from "../components/SignUp/EducationDropdown";
+import Loader from "../components/Loader";
 import sendEmailVerification from "../api/feature/Auth/sendEmailVerification";
 import confirmEmailVerification from "../api/feature/Auth/confirmEmailVerification";
 import signupWithEmail from "../api/feature/Auth/signupWithEmail";
@@ -25,6 +26,7 @@ const SignupForm = () => {
 
     const [isAuthCodeSent, setIsAuthCodeSent] = useState(false);
     const [authCode, setAuthCode] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     // 공통 인풋 변경 처리
     const handleChange = (e) => {
@@ -49,10 +51,13 @@ const SignupForm = () => {
             return;
         }
         try {
+            setIsLoading(true);
             await sendEmailVerification(formData.email, "SIGNUP");
             setIsAuthCodeSent(true);
         } catch {
             console.log("인증 코드 전송 실패: ", formData)
+        } finally {
+            setIsLoading(false);
         }
         
     };
@@ -84,6 +89,19 @@ const SignupForm = () => {
             return;
         }
 
+        if(formData.password.length < 8 || formData.password.length > 30) {
+            alert("비밀번호는 8자~30자 사이여야 합니다.");
+            return;
+        }
+
+        const requiredFields = ["email", "name", "password", "gender", "region", "job", "finalEdu"];
+        for(let field of requiredFields) {
+            if(!formData[field]) {
+                alert(`${field}을(를) 입력해주세요.`);
+                return;
+            }
+        }
+
         try {
             console.log("회원가입 요청 데이터:", formData);
             const response = await signupWithEmail(formData);
@@ -97,6 +115,7 @@ const SignupForm = () => {
 
     return (
     <PageWrapper>
+        {isLoading && <Loader message = "이메일로 인증번호를 발송 중입니다..."/>}
         <FormContainer onSubmit={handleSubmit}>
             <Section>
                 <FormLabel>이메일<span style={{color: 'red'}}>*</span></FormLabel>
@@ -106,7 +125,7 @@ const SignupForm = () => {
                         value={formData.email} 
                         onChange={handleChange} 
                         placeholder="이메일을 입력해주세요" 
-                        required 
+                        // required 
                         type="email"
                     />
                     <AuthCodeButton type="button" onClick = {handleSendAuthCode}>인증번호 받기</AuthCodeButton>
@@ -118,7 +137,7 @@ const SignupForm = () => {
                             value={authCode} 
                             onChange={(e) => setAuthCode(e.target.value)} 
                             placeholder="인증번호 6자리 입력" 
-                            required 
+                            // required 
                         />
                         <AuthCodeButton 
                             type="button" 
@@ -129,6 +148,25 @@ const SignupForm = () => {
                         </AuthCodeButton>
                     </FormRow>
                 )}
+                {formData.isVerified && (
+                    <FormRow style={{marginTop: '10px'}}>
+                        <span style={{color: '#2563EB', fontSize:'12px'}}>이메일 인증 완료</span>
+                    </FormRow>
+                )}
+            </Section>
+
+            <Section>
+                <FormLabel>비밀번호<span style={{color: 'red'}}>*</span></FormLabel>
+                <FormRow>
+                    <FormInput 
+                        type="password"
+                        name="password" 
+                        value={formData.password} 
+                        onChange={handleChange} 
+                        placeholder="비밀번호를 입력해주세요" 
+                        // required 
+                    />
+                </FormRow>  
             </Section>
 
             <Section>
@@ -139,7 +177,8 @@ const SignupForm = () => {
                         value={formData.name} 
                         onChange={handleChange} 
                         placeholder="이름을 입력해주세요" 
-                        required />
+                        // required 
+                    />
                 </FormRow>  
             </Section>
 
@@ -162,14 +201,14 @@ const SignupForm = () => {
                     <GenderButton 
                         type="button" 
                         onClick={() => handleGenderSelect("MALE")} 
-                        className={`flex-1 border px-2 py-1 rounded ${formData.gender === "남성" ? "bg-blue-100" : "bg-white"}`}
+                        selected = {formData.gender === "MALE"}
                     >
                             남성
                     </GenderButton>
                     <GenderButton 
                         type="button" 
-                        onClick={() => handleGenderSelect("여성")} 
-                        className={`flex-1 border px-2 py-1 rounded ${formData.gender === "여성" ? "bg-blue-100" : "bg-white"}`}
+                        onClick={() => handleGenderSelect("FEMALE")} 
+                        selected = {formData.gender === "FEMALE"}   
                     >
                         여성
                     </GenderButton>
@@ -194,13 +233,13 @@ const SignupForm = () => {
                         value={formData.job} 
                         onChange={handleChange} 
                         placeholder="직업을 입력해주세요" 
-                        required 
+                        // required 
                     />
                 </FormRow>
             </Section>
 
             <Section>
-                <FormLabel>경력 연차<span style={{color: 'red'}}>*</span>   {formData.experience}년</FormLabel>
+                <FormLabel>경력 연차<span style={{color: 'red'}}>*</span>   {formData.career}년</FormLabel>
                 <FormRow>
                     <RangeInput 
                         type="range" 
@@ -310,7 +349,7 @@ const GenderButton = styled.button`
     padding: 10px 0;
     border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: ${props => props.selected ? '#cce5ff' : 'white'};
+    background-color: ${(props) => (props.selected ? "#cce5ff" : "white")};
     cursor: pointer;
     font-weight: 500;
 `;

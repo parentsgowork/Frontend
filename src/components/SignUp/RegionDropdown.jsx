@@ -17,6 +17,16 @@ const regions = [
   },
 ];
 
+const regionMap = {
+  "서울": "SEOUL",
+  "경기": "GYEONGGI",
+  "인천": "INCHEON",
+  "강원": "GANGWON",
+  "대전": "DAEJEON",
+  "세종": "SEJONG",
+  "충북": "CHUNGBUK",
+};
+
 const RegionDropdown = ({ selected, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -35,14 +45,15 @@ const RegionDropdown = ({ selected, onChange }) => {
         };
     }, []);
 
-    const handleSelect = (region) => {
-        onChange(region);
-        setIsOpen(false);
-    }
+    const handleSelect = (regionLabel) => {
+      const mappedValue = regionMap[regionLabel];
+      onChange(mappedValue);
+      setIsOpen(false);
+    };
 
     return (
         <DropdownWrapper ref={dropdownRef}>
-            <DropdownButton onClick={() => setIsOpen((prev) => !prev)}>
+            <DropdownButton type = "button" onClick={() => setIsOpen((prev) => !prev)}>
                 {selected || "거주 지역을 선택해주세요"}
             </DropdownButton>
             {isOpen && (

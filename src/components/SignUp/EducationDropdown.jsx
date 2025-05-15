@@ -30,6 +30,14 @@ const educations = [
   },
 ];
 
+const eduMap = {
+  "고졸": "HIGH_SCHOOL",
+  "전문대졸": "ASSOCIATE",
+  "대졸": "BACHELOR",
+  "석사": "MASTER",
+  "박사": "DOCTOR",
+}
+
 const Educationdown = ({ selected, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -48,14 +56,15 @@ const Educationdown = ({ selected, onChange }) => {
         };
     }, []);
 
-    const handleSelect = (education) => {
-        onChange(education);
-        setIsOpen(false);
+    const handleSelect = (educationLabel) => {
+      const mappedValue = eduMap[educationLabel];
+      onChange(mappedValue);
+      setIsOpen(false);
     }
 
     return (
         <DropdownWrapper ref={dropdownRef}>
-            <DropdownButton onClick={() => setIsOpen((prev) => !prev)}>
+            <DropdownButton type = "button" onClick={() => setIsOpen((prev) => !prev)}>
                 {selected || "최종 학력을 선택해주세요"}
             </DropdownButton>
             {isOpen && (
