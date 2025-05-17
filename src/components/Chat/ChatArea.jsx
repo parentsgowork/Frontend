@@ -15,7 +15,7 @@ const policyOptions = [
   "생활 안정 지원",
 ];
 
-const ChatArea = ({ topic, messages, onSelect }) => {
+const ChatArea = ({ topic, messages, onSelect, onSave }) => {
     let options = [];
     if (topic === "교육 정보") {
         options = educationOptions;
@@ -29,6 +29,7 @@ const ChatArea = ({ topic, messages, onSelect }) => {
                 <Bubble key={idx} from={m.from}>
                   {m.text}
 
+                  {/* 교육 정보, 고용정책/복지 정보 option 클릭 시 */}
                   {idx === messages.length - 1 &&
                     m.from === "bot" &&
                     (m.text === "궁금한 교육 정보를 선택해주세요!" || m.text === "궁금한 고용 정책/복지 정보를 선택해주세요!")&& (
@@ -41,6 +42,17 @@ const ChatArea = ({ topic, messages, onSelect }) => {
                             {opt}
                           </OptionBtn>
                         ))}
+                      </ButtonGroup>
+                  )}
+
+                  {/* 자기소개서 저장 버튼  */}
+                  {idx === messages.length - 1 &&
+                    m.from === "bot" &&
+                    m.text.includes("지금까지 작성된 자기소개서를") && (
+                      <ButtonGroup>
+                        <OptionBtn onClick={() => onSave()}>
+                          자기소개서 저장하기
+                        </OptionBtn>
                       </ButtonGroup>
                   )}
                 </Bubble>

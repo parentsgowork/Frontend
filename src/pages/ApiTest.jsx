@@ -15,9 +15,9 @@ import recommendPolicyByCategory from "../api/feature/Rag/recommendPolicyByCateg
 // import bookmarkEducation from "../api/feature/Bookmark/bookmarkEducation";
 // import bookmarkPolicy from "../api/feature/Bookmark/bookmarkPolicy";
 // import bookmarkJob from "../api/feature/Bookmark/bookmarkJob";
-import { fetchAllBookmarks, fetchBookmarkById, deleteBookmarkById } from "../api/feature/Bookmark/bookmarkApi";
-import { initResumeSession, answerResumeQuestion } from "../api/feature/Resume/resumeSession";
-import { getResumeResult, saveResume, getUserResumes } from "../api/feature/Resume/resumeApi";
+// import { fetchAllBookmarks, fetchBookmarkById, deleteBookmarkById } from "../api/feature/Bookmark/bookmarkApi";
+// import { initResumeSession, answerResumeQuestion } from "../api/feature/Resume/resumeAICall";
+// import { getResumeResult, saveResume, getUserResumes } from "../api/feature/Resume/resumeApi";
 
 const ApiTest = () => {
 
