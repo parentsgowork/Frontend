@@ -12,9 +12,9 @@ import getSeniorJobs from "../api/feature/Crawler/getSeniorJobs";
 import analyzeReemployment from "../api/feature/Rag/analyzeReemployment";
 import searchEducationByCategory from "../api/feature/Rag/searchEducationByCategory";
 import recommendPolicyByCategory from "../api/feature/Rag/recommendPolicyByCategory";
-import bookmarkEducation from "../api/feature/Bookmark/bookmarkEducation";
-import bookmarkPolicy from "../api/feature/Bookmark/bookmarkPolicy";
-import bookmarkJob from "../api/feature/Bookmark/bookmarkJob";
+// import bookmarkEducation from "../api/feature/Bookmark/bookmarkEducation";
+// import bookmarkPolicy from "../api/feature/Bookmark/bookmarkPolicy";
+// import bookmarkJob from "../api/feature/Bookmark/bookmarkJob";
 import { fetchAllBookmarks, fetchBookmarkById, deleteBookmarkById } from "../api/feature/Bookmark/bookmarkApi";
 import { initResumeSession, answerResumeQuestion } from "../api/feature/Resume/resumeSession";
 import { getResumeResult, saveResume, getUserResumes } from "../api/feature/Resume/resumeApi";
@@ -347,7 +347,7 @@ const ApiTest = () => {
                     <Button onClick={handleRecommendPolicyByCategory} success={false}>고용정책/복지 안내</Button>
                 </ButtonContainer>
 
-                <SectionTitle>BOOKMARK</SectionTitle>
+                {/* <SectionTitle>BOOKMARK</SectionTitle>
                 <ButtonContainer>
                     <Button onClick={handleBookmarkEducation} success={false}>교육 북마크(py)</Button>
                     <Button onClick={handleBookmarkPolicy} success={false}>정책 북마크(py)</Button>
@@ -355,7 +355,7 @@ const ApiTest = () => {
                     <Button onClick={handleFetchAllBookmarks} success={false}>전체 북마크 조회(sp)</Button>
                     <Button onClick={handleFetchBookmarkById} success={false}>북마크 상세 조회(sp)</Button>
                     <Button onClick={handleDeleteBookmarkById} success={false}>북마크 삭제(sp)</Button>
-                </ButtonContainer>
+                </ButtonContainer> */}
 
                 <SectionTitle>RESUME</SectionTitle>
                 <ButtonContainer>

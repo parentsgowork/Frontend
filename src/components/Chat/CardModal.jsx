@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import bookmarkJob from "../../api/feature/Bookmark/bookmarkJob";
-import bookmarkEducation from "../../api/feature/Bookmark/bookmarkEducation";
-import bookmarkPolicy from "../../api/feature/Bookmark/bookmarkPolicy";
+import { bookmarkJob } from "../../api/feature/Bookmark/bookmarkJob";
+import { bookmarkEducation } from "../../api/feature/Bookmark/bookmarkEducation";
+import { bookmarkPolicy } from "../../api/feature/Bookmark/bookmarkPolicy";
 import Loader from "../Loader";
 
 const CardModal = ({ topic, category, card, onClose }) => {

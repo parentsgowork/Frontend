@@ -1,8 +1,17 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
 import { FiEdit2, FiTrash2 } from "react-icons/fi"; 
 
-const InfoCard = ({ topic, data, onClick, isBookmark = false}) => {
+const InfoCard = ({ topic, category, data, onClick}) => {
+    useEffect(() => {
+        console.log("InfoCard mounted");
+        console.log("Topic:", topic);
+        console.log("Category:", category);
+        console.log("Data:", data);
+        return () => {
+            console.log("InfoCard unmounted");
+        };
+    }, []);
 
    const handleCardClick = () => {
       onClick(data);
@@ -49,22 +58,12 @@ const InfoCard = ({ topic, data, onClick, isBookmark = false}) => {
               </>
             )}
 
-            {/* 북마크 페이지 여부 */}
-            {isBookmark ? (
-              <BookmarkFooter onClick={(e) => e.stopPropagation()}>
-                <span>저장됨</span>
-                <IconGroup>
-                  {/* <IconBtn><FiEdit2 /></IconBtn> */}
-                  <IconBtn><FiTrash2 /></IconBtn>
-                </IconGroup>
-              </BookmarkFooter>
-            ) : (
-              <LinkBtn
-                onClick={handleButtonClick}
-              >
-                지원하기
-              </LinkBtn>
-            )}
+
+            <LinkBtn
+              onClick={handleButtonClick}
+            >
+              지원하기
+            </LinkBtn>
         </CardContainer>
     )
 }
