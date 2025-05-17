@@ -224,6 +224,7 @@ const ChatbotPage =()=> {
                           <InfoCard
                             // key={card.id}
                             topic={topic}
+                            category={infoCategory}
                             data={card}
                             onClick={() => openModal(card)}
                           />
@@ -249,7 +250,7 @@ const ChatbotPage =()=> {
             </Sidebar>
 
             {/* ➡️ Modal */}
-            {modalContent && <CardModal topic = {topic} card={modalContent} onClose={closeModal} />}
+            {modalContent && <CardModal topic = {topic} category={infoCategory} card={modalContent} onClose={closeModal} />}
         </Wrapper>
     )
 }

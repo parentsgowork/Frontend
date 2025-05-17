@@ -7,12 +7,10 @@ import springAPI from "../../config/springApi";
  * @param {number} page - 페이지 번호
  * @returns {Promise<AxiosResponse>}
  */
-const bookmarkJob = async (jobId, page) => {
+const bookmarkJob = async (jobInfos) => {
+  console.log("채용정보 북마크 저장 요청:", jobInfos);
   try {
-    const res = await springAPI.post("/bookmark", {
-      jobId,
-      page,
-    });
+    const res = await springAPI.post("/jobInfo/add", jobInfos);
     console.log("채용 북마크 저장 성공:", res);
     return res;
   } catch (error) {

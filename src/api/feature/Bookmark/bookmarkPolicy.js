@@ -8,10 +8,10 @@ import pythonAPI from "../../config/pythonApi";
  * @param {Array<{title: string, category: string, description: string, url: string}>} policies - 북마크할 정책 목록
  * @returns {Promise<AxiosResponse>} 서버 응답
  */
-const bookmarkPolicy = async (userId, policies) => {
+const bookmarkPolicy = async (policies) => {
+  console.log("정책정보 북마크 저장 요청:", policies);
   try {
     const res = await pythonAPI.post("/api/policy/bookmark", {
-      user_id: userId,
       policies,
     });
     console.log("정책 북마크 저장 성공:", res);

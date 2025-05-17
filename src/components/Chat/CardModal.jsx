@@ -1,22 +1,91 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import bookmarkJob from "../../api/feature/Bookmark/bookmarkJob";
+import bookmarkEducation from "../../api/feature/Bookmark/bookmarkEducation";
+import bookmarkPolicy from "../../api/feature/Bookmark/bookmarkPolicy";
+import Loader from "../Loader";
 
-const CardModal = ({ card, onClose }) => {
+const CardModal = ({ topic, category, card, onClose }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    console.log("CardModal mounted");
+    console.log("Topic:", topic);
+    console.log("Category:", category);
+    console.log("Card:", card);
+    return () => {
+      console.log("CardModal unmounted");
+    };
+  }, []);
+
   const handleApplyClick = () => {
     if (card.url) {
       window.open(card.url, "_blank");
     }
   };
 
+  const handleBookmarkClick = async () => {
+    setIsLoading(true);
+    try {
+      if(topic === "채용 정보") {
+        const jobInfos = [{title: card.job_title, content: card.description }];
+        await bookmarkJob(jobInfos);
+      } else if(topic === "교육 정보") {
+        const bookmarks = [{title: card.title, url: card.url}];
+        await bookmarkEducation(bookmarks);
+      } else if(topic === "고용정책/복지 정보") {
+        const policies = [{title: card.title,category: category, description: card.description, url: card.url}];
+        await bookmarkPolicy(policies);
+      }
+
+      alert("북마크가 저장되었습니다.");
+    } catch (error) {
+      console.error("북마크 저장 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <ModalOverlay>
       <ModalBody>
+        {isLoading && <Loader message="북마크 저장 중..."/>}
         <CloseBtn onClick={onClose}>×</CloseBtn>
-        <h2>{card.title}</h2>
-        <p>{card.description}</p>
+        {topic === "채용 정보" && (
+          <>
+            <h2>{card.company_name}</h2>
+            <p>{card.job_title}</p>
+            <p>{card.deadline}</p>
+            <p>{card.description}</p>
+            <p>{card.location}</p>
+            <p>{card.pay}</p>
+            <p>{card.registration_date}</p>
+            <p>{card.time}</p>
+          </>
+        )}
+
+        {topic === "교육 정보" && (
+          <>
+            <h2>{card.title}</h2>
+            <p>{card.reg_start_date}</p>
+            <p>{card.reg_end_date}</p>
+            <p>{card.course_start_date}</p>
+            <p>{card.course_end_date}</p>
+            <p>{card.hour}</p>
+            <p>{card.status}</p>
+          </>
+        )}  
+        {topic === "고용정책/복지 정보" && (
+          <>
+            <h2>{card.title}</h2>
+            <p>{card.description}</p>
+          </>
+        )}
+        
+        {/* 지원하기 및 북마크 버튼 */}
         <ButtonGroup>
-          <ApplyBtn onClick={handleApplyClick}>지원하기 →</ApplyBtn>
-          <BookmarkBtn>북마크</BookmarkBtn>
+          <ApplyBtn onClick={handleApplyClick}>지원하기</ApplyBtn>
+          <BookmarkBtn onClick={handleBookmarkClick}>북마크</BookmarkBtn>
         </ButtonGroup>
       </ModalBody>
     </ModalOverlay>

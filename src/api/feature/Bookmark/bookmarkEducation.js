@@ -8,10 +8,10 @@ import pythonAPI from "../../config/pythonApi";
  * @param {Array<{title: string, url: string}>} bookmarks - 북마크할 교육 정보 목록
  * @returns {Promise<AxiosResponse>} 서버 응답
  */
-const bookmarkEducation = async (userId, bookmarks) => {
+const bookmarkEducation = async (bookmarks) => {
+  console.log("교육정보 북마크 저장 요청:", bookmarks);
   try {
     const res = await pythonAPI.post("/api/education/bookmark", {
-      user_id: userId,
       bookmarks,
     });
     console.log("교육 북마크 저장 성공:", res);
