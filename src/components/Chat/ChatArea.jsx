@@ -1,14 +1,27 @@
 import React from "react";
 import styled from "styled-components";
 
-const options = [
-  "디지털 역량 교육",
-  "직업 훈련",
-  "자격증 과정",
-  "기타 교육"
+const educationOptions = [
+  "디지털기초역량",
+  "사무행정실무",
+  "전문기술자격증",
+  "서비스 직무교육",
 ];
 
-const ChatArea = ({ messages, onSelect }) => {
+const policyOptions = [
+  "취업 지원금",
+  "직업 훈련 지원",
+  "고용 안정 지원",
+  "생활 안정 지원",
+];
+
+const ChatArea = ({ topic, messages, onSelect }) => {
+    let options = [];
+    if (topic === "교육 정보") {
+        options = educationOptions;
+    } else if (topic === "고용정책/복지 정보") {
+        options = policyOptions;
+    }
 
     return(
         <ChatBox>

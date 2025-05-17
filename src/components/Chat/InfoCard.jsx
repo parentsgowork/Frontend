@@ -3,10 +3,53 @@ import styled from "styled-components";
 import { FiEdit2, FiTrash2 } from "react-icons/fi"; 
 
 const InfoCard = ({ topic, data, onClick, isBookmark = false}) => {
+
+   const handleCardClick = () => {
+      onClick(data);
+   }
+
+   const handleButtonClick = (e) => {
+      e.stopPropagation();
+      window.open(data.url, "_blank");
+    }
+
     return(
-        <CardContainer onClick={() => onClick(data)}>
-            <Title>{data.title}</Title>
-            <Description>{data.description}</Description>
+        <CardContainer onClick={handleCardClick}>
+
+            {topic === "채용 정보" && (
+              <>
+                <Title>{data.company_name}</Title>
+                <Description>{data.job_title}</Description>
+                <Description>{data.deadline}</Description>
+                <Description>{data.description}</Description>
+                <Description>{data.location}</Description>
+                <Description>{data.pay}</Description>
+                <Description>{data.registration_date}</Description>
+                <Description>{data.time}</Description>
+
+              </>
+            )}
+
+            {topic === "교육 정보" && (
+              <>
+                <Title>{data.title}</Title>
+                <Description>{data.reg_start_date}</Description>
+                <Description>{data.reg_end_date}</Description>
+                <Description>{data.course_start_date}</Description>
+                <Description>{data.course_end_date}</Description>
+                <Description>{data.hour}</Description>
+                <Description>{data.status}</Description>
+              </>
+            )}
+
+            {topic === "고용정책/복지 정보" && (
+              <>
+                <Title>{data.title}</Title>
+                <Description>{data.description}</Description>
+              </>
+            )}
+
+            {/* 북마크 페이지 여부 */}
             {isBookmark ? (
               <BookmarkFooter onClick={(e) => e.stopPropagation()}>
                 <span>저장됨</span>
@@ -17,10 +60,7 @@ const InfoCard = ({ topic, data, onClick, isBookmark = false}) => {
               </BookmarkFooter>
             ) : (
               <LinkBtn
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(data.url, "_blank");
-                }}
+                onClick={handleButtonClick}
               >
                 지원하기
               </LinkBtn>
