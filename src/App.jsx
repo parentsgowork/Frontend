@@ -32,7 +32,7 @@ const App = () => {
     <Routes>
       <Route element={<Layout />}>
         {/* NO REDIRECTION */}
-        <Route path="/api-test" element={<ApiTest />} />
+        {/* <Route path="/api-test" element={<ApiTest />} /> */}
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />

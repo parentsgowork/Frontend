@@ -1,30 +1,69 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
 import { FiEdit2, FiTrash2 } from "react-icons/fi"; 
 
-const InfoCard = ({ topic, data, onClick, isBookmark = false}) => {
+const InfoCard = ({ topic, category, data, onClick}) => {
+    useEffect(() => {
+        console.log("InfoCard mounted");
+        console.log("Topic:", topic);
+        console.log("Category:", category);
+        console.log("Data:", data);
+        return () => {
+            console.log("InfoCard unmounted");
+        };
+    }, []);
+
+   const handleCardClick = () => {
+      onClick(data);
+   }
+
+   const handleButtonClick = (e) => {
+      e.stopPropagation();
+      window.open(data.url, "_blank");
+    }
+
     return(
-        <CardContainer onClick={() => onClick(data)}>
-            <Title>{data.title}</Title>
-            <Description>{data.description}</Description>
-            {isBookmark ? (
-              <BookmarkFooter onClick={(e) => e.stopPropagation()}>
-                <span>저장됨</span>
-                <IconGroup>
-                  {/* <IconBtn><FiEdit2 /></IconBtn> */}
-                  <IconBtn><FiTrash2 /></IconBtn>
-                </IconGroup>
-              </BookmarkFooter>
-            ) : (
-              <LinkBtn
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(data.url, "_blank");
-                }}
-              >
-                지원하기
-              </LinkBtn>
+        <CardContainer onClick={handleCardClick}>
+
+            {topic === "채용 정보" && (
+              <>
+                <Title>{data.company_name}</Title>
+                <Description>{data.job_title}</Description>
+                <Description>{data.deadline}</Description>
+                <Description>{data.description}</Description>
+                <Description>{data.location}</Description>
+                <Description>{data.pay}</Description>
+                <Description>{data.registration_date}</Description>
+                <Description>{data.time}</Description>
+
+              </>
             )}
+
+            {topic === "교육 정보" && (
+              <>
+                <Title>{data.title}</Title>
+                <Description>{data.reg_start_date}</Description>
+                <Description>{data.reg_end_date}</Description>
+                <Description>{data.course_start_date}</Description>
+                <Description>{data.course_end_date}</Description>
+                <Description>{data.hour}</Description>
+                <Description>{data.status}</Description>
+              </>
+            )}
+
+            {topic === "고용정책/복지 정보" && (
+              <>
+                <Title>{data.title}</Title>
+                <Description>{data.description}</Description>
+              </>
+            )}
+
+
+            <LinkBtn
+              onClick={handleButtonClick}
+            >
+              지원하기
+            </LinkBtn>
         </CardContainer>
     )
 }

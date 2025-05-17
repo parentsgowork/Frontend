@@ -3,8 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { theme } from "../constants/theme";
 import styled from "styled-components";
 import InfoCard from "../components/Chat/InfoCard";
+import BmkCard from "../components/Bookmark/BmkCard";
 import CardModal from "../components/Chat/CardModal";
-// import getBookmarks from "../api/getBookmarks"; 
+import BmkCardModal from "../components/Bookmark/BmkCardModal";
+import { getBookmarkedJobs, getBookmarkedJobById } from "../api/feature/Bookmark/bookmarkJob";
+import { getBookmarkedEducations, getBookmarkedEducationById } from "../api/feature/Bookmark/bookmarkEducation";
+import { getBookmarkedPolicies, getBookmarkedPolicyById } from "../api/feature/Bookmark/bookmarkPolicy";
 
 const topicNameMap = {
   job: {
@@ -34,26 +38,40 @@ const BookmarkPage = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [sortOrder, setSortOrder] = useState("latest");
 
-    const navigate = useNavigate(); 
+  const navigate = useNavigate(); 
 
+  // 북마크 데이터 가져오기
   useEffect(() => {
     const fetchBookmarks = async () => {
-      // 실제 API 연결 시 주석 해제
-      // const response = await getBookmarks(topic);
-      // setBookmarks(response.data);
+      try {
+        let response;
+        if (topic === "job") {
+          response = await getBookmarkedJobs();
+        } else if (topic === "education") {
+          response = await getBookmarkedEducations();
+        } else if (topic === "policy") {
+          response = await getBookmarkedPolicies();
+        } else {
+          setBookmarks([]);
+          return;
+        }
 
-      // 임시 mock 데이터
-      const mock = [
-        { id: 1, title: "웹 개발자 구직 정보", description: "프론트엔드 개발자 포지션에 지원하기 위한 정보입니다.", url: "https://example.com", date: "2025-05-01" },
-        { id: 2, title: "백엔드 개발자 구직 정보", description: "Java 및 Spring 프레임워크 경험이 있는 백엔드 개발자 포지션입니다.", url: "https://example.com", date: "2025-04-25" },
-        { id: 3, title: "UX/UI 디자이너 채용 공고", description: "3년 이상 경력의 UX/UI 디자이너를 찾고 있는 회사 정보입니다.", url: "https://example.com", date: "2025-04-28" }
-      ];
-      setBookmarks(mock);
+        if (response && response.data) {
+          setBookmarks(response.data.result);
+          setFiltered(response.data.result);
+        } else {
+          setBookmarks([]);
+        }
+      } catch (error) {
+        console.error("북마크 데이터를 불러오는 중 오류 발생:", error);
+        setBookmarks([]);
+      }
     };
 
     fetchBookmarks();
   }, [topic]);
 
+  // 검색 및 정렬
   useEffect(() => {
     const result = [...bookmarks]
       .filter(card => card.title.includes(searchKeyword))
@@ -67,7 +85,26 @@ const BookmarkPage = () => {
     setFiltered(result);
   }, [searchKeyword, sortOrder, bookmarks]);
 
-  const handleCardClick = (card) => setSelectedCard(card);
+  const handleCardClick = async (id) => {
+    try{
+      let result;
+      if(topic === "job") {
+          const res = await getBookmarkedJobById(id);
+          result = res.data.result;
+      } else if(topic === "education") {
+          const res = await getBookmarkedEducationById(id);
+          result = res.data.result;
+      } else if(topic === "policy") {
+          const res = await getBookmarkedPolicyById(id);
+          result = res.data.result;
+      }
+
+      if(result) { setSelectedCard(result); }
+    } catch (error) {
+      console.error("북마크 카드 클릭 중 오류:", error);
+    }
+  };
+  
   const handleModalClose = () => setSelectedCard(null);
 
   return (
@@ -89,18 +126,17 @@ const BookmarkPage = () => {
 
       <CardGrid>
         {filtered.map((card) => (
-          <InfoCard
+          <BmkCard
             key={card.id}
             topic={topic}
             data={card}
-            isBookmark={true}
-            onClick={handleCardClick}
+            onClick={()=>handleCardClick(card.id)}
           />
         ))}
       </CardGrid>
 
       {selectedCard && (
-        <CardModal
+        <BmkCardModal
           topic={topic}
           card={selectedCard}
           onClose={handleModalClose}
