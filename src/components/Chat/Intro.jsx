@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import exampleImage from '../../assets/images/metamong.png';
 import chatbotImage from '../../assets/images/chatbot.png';
 
 const options = [
