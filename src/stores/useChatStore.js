@@ -91,10 +91,11 @@ const useChatStore = create((set) => ({
             set({ isLoading: true });
             // const res = await getSeniorJobs(page);
             const res = await getSeniorJobs();
+            console.log("채용정보 API 응답:", res);
 
             set(() => ({
                 jobInfo: res,
-                cards: res,
+                cards: res.data,
             }))
         } catch (error) {
             console.error("채용정보 API 호출 실패:", error);
@@ -120,7 +121,7 @@ const useChatStore = create((set) => ({
 
             set(() => ({
                 educationInfo: res,
-                cards: res.result,
+                cards: res.results,
             }))
         } catch (error) {
             console.error("교육정보 API 호출 실패:", error);

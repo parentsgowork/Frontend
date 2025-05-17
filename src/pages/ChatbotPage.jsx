@@ -182,6 +182,7 @@ const ChatbotPage =()=> {
                     <Intro onOptionClick={handleOptionClick} />
                 ) : (
                     <ChatArea 
+                      topic={topic}
                       messages={messages} 
                       onSelect={(category) => setInfoCategory(category)}
                     />
@@ -221,8 +222,9 @@ const ChatbotPage =()=> {
                       ) : (
                         cards.map((card) => (
                           <InfoCard
-                            key={card.id}
+                            // key={card.id}
                             topic={topic}
+                            category={infoCategory}
                             data={card}
                             onClick={() => openModal(card)}
                           />
@@ -231,7 +233,7 @@ const ChatbotPage =()=> {
                 </CardList>
                 
                 {/* Pagination */}
-                {topic === "채용 정보" && (
+                {/* {topic === "채용 정보" && (
                   <PaginationWrapper>
                     {[1, 2, 3, 4, 5].map((num) => (
                       <PageBtn
@@ -243,12 +245,12 @@ const ChatbotPage =()=> {
                       </PageBtn>
                     ))}
                   </PaginationWrapper>
-                )}
+                )} */}
             
             </Sidebar>
 
             {/* ➡️ Modal */}
-            {modalContent && <CardModal topic = {topic} card={modalContent} onClose={closeModal} />}
+            {modalContent && <CardModal topic = {topic} category={infoCategory} card={modalContent} onClose={closeModal} />}
         </Wrapper>
     )
 }
