@@ -10,34 +10,17 @@ const Footer = () => {
           <Title>다시 일해!</Title>
           <Item>중장년층을 위한 맞춤형 구직 플랫폼으로 새로운 시작을 응원합니다.</Item>
         </Column>
-        <Column>
+        {/* <Column>
           <Title>서비스</Title>
           <Item>구직 정보</Item>
           <Item>맞춤형 추천</Item>
           <Item>복지 정보</Item>
           <Item>교육 과정</Item>
-        </Column>
-        <Column>
-          <Title>지원</Title>
-          <Item>자주 묻는 질문</Item>
-          <Item>이용 가이드</Item>
-          <Item>고객 센터</Item>
-          <Item>개인정보처리방침</Item>
-        </Column>
-        <Column>
-          <Title>연락처</Title>
-          <ContactItem><FaPhone /> 1588-1234</ContactItem>
-          <ContactItem><FaEnvelope /> help@dasi-ilhae.kr</ContactItem>
-          <ContactItem><FaMapMarkerAlt /> 서울시 강남구 테헤란로 123</ContactItem>
-        </Column>
+        </Column> */}
       </FooterTop>
+
       <FooterBottom>
         <Copy>© 2025 다시 일해! 모든 권리 보유.</Copy>
-        <SocialIcons>
-          <a href="#"><FaFacebookF /></a>
-          <a href="#"><FaTwitter /></a>
-          <a href="#"><FaYoutube /></a>
-        </SocialIcons>
         <TopButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <FaArrowUp />
         </TopButton>

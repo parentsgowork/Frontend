@@ -3,10 +3,10 @@ import analyzeReemployment from "../api/feature/Rag/analyzeReemployment";
 import getSeniorJobs from "../api/feature/Crawler/getSeniorJobs";
 import searchEducationByCategory from "../api/feature/Rag/searchEducationByCategory";
 import recommendPolicyByCategory from "../api/feature/Rag/recommendPolicyByCategory";
-import { SiEmberdotjs } from "react-icons/si";
+import { initResumeSession, answerResumeQuestion, getResumeResult, saveResume } from "../api/feature/Resume/resumeApi";
 
 
-const useChatStore = create((set) => ({
+const useChatStore = create((set, get) => ({
     topic: null, // 대화 주제
     messages: [], // 대화 내용
 
@@ -18,12 +18,18 @@ const useChatStore = create((set) => ({
     analysisResult: null, // 재취업 분석 결과
     jobInfo: [], // 채용정보
     jobPage: 1, // 채용정보 페이지 번호
-    educationInfo: [], // 맞춤형 교육 정보 
-    policyInfo: [], // 정책, 복지 정보
+    educationInfo: [], // 맞춤형 교육 정보 (사이드바)
+    policyInfo: [], // 정책, 복지 정보(사이드바)
 
     // 자기소개서
-    resumeSessionId: null, 
-    resumeResult: null, 
+    rsmSessionId: null,
+    rsmPhase: -1,
+    rsmQuestionCategory: "",
+    isLast: false,
+    companyName: "",
+    positionName: "",
+    finalRsm: null, 
+    rsmInfo: null, // 자기소개서 정보(사이드바)
 
     // 대화 주제 설정 및 관련 상태 초기화
     setTopic: (topic) =>
@@ -32,6 +38,7 @@ const useChatStore = create((set) => ({
             messages:[],
             cards: [],
             modalContent: null,
+            isLoading: false,
 
             analysisResult: null,
             jobInfo: [],
@@ -39,8 +46,14 @@ const useChatStore = create((set) => ({
             educationInfo: [],
             policyInfo: [],
 
-            resumeSessionId: null,
-            resumeResult: null,
+            rsmSessionId: null,
+            rsmPhase: -1,
+            rsmQuestionCategory: "",
+            isLast: false,
+            companyName: "",
+            positionName: "",
+            finalRsm: null, 
+            rsmInfo: null,
     }),
 
     // 로딩 상태 설정
@@ -86,7 +99,7 @@ const useChatStore = create((set) => ({
     },
 
     // 채용 정보
-    handleSearchJobInfo: async (page) => {
+    handleSearchJobInfo: async () => {
         try {
             set({ isLoading: true });
             // const res = await getSeniorJobs(page);
@@ -157,6 +170,123 @@ const useChatStore = create((set) => ({
             }))
         } finally {
             set({ isLoading: false });
+        }
+    },
+
+    handleResumeSession: async (inputText) => {
+        const rsmSessionId = get().rsmSessionId
+        const rsmPhase = get().rsmPhase
+        const isLast = get().isLast
+        const companyName = get().companyName
+        const positionName = get().positionName
+        const addMessage = get().addMessage
+
+        switch (rsmPhase)  {
+            case -1: {// 자기소개서 버튼 클릭
+                if(!companyName && !inputText) {
+                    addMessage("bot", "자기소개서 작성을 시작합니다. 지원하고자 하는 회사명을 입력해주세요!");
+                } else if(!companyName && inputText) {
+                    addMessage("bot", `${inputText}에 지원하실 예정이군요! 이 회사에 지원하고자 하는 직무명은 무엇인가요?`);
+                    set({ companyName: inputText });
+                } else if(companyName && !positionName && !inputText) {
+                    addMessage("bot", `${companyName}에 지원하고자 하는 직무명은 무엇인가요?`);
+                } else if(companyName && !positionName && inputText) {
+                    addMessage("bot", `${inputText}으로 지원하실 예정이군요! 이제 자기소개서를 차근차근 완성해볼까요? 먼저 성장과정에 대해 말씀해주세요.`);
+                    set({ positionName: inputText });
+                    set({ rsmPhase: 0 }); // 다음 단계 진입
+
+                }
+                break;
+            }
+            case 0: {// 자기소개서 세션 생성 및 첫번째 성장과정에 대한 대답 전송
+                const resOfCreateSession = await initResumeSession(companyName, positionName);
+                const newSessionId = resOfCreateSession.session_id;
+                set({ rsmSessionId: newSessionId });
+                set({ rsmQuestionCategory: resOfCreateSession.category });
+                
+                const resOfQuestion1 = await answerResumeQuestion(newSessionId, inputText);
+                set({ rsmQuestionCategory: resOfQuestion1.current_category });
+                set({ isLast: resOfQuestion1.is_last });
+
+                const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion1.ai_response}`;
+                const followupText =  `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion1.next_question}` 
+                addMessage("bot", responseText+followupText);
+
+                set({ rsmPhase: 1 }); // 다음 단계 진입
+                break;
+            }
+            case 1: { // 자기소개서 질문에 대한 대답 전송
+                const resOfQuestion = await answerResumeQuestion(rsmSessionId, inputText);
+                const currentCategory = resOfQuestion.current_category;
+                const nextCategory = resOfQuestion.next_category;
+                const isLast = resOfQuestion.is_last;
+                
+                set({ rsmQuestionCategory: currentCategory, isLast });
+
+                const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion.ai_response}`;
+                const followupText = (currentCategory == "강점약점" && nextCategory == "프로젝트경험")  
+                    ? `\n\n마지막 질문입니다! ${resOfQuestion.next_question}`
+                    :  (currentCategory == "프로젝트경험" && !nextCategory) 
+                    ? "\n\n지금까지 작성된 자기소개서를 보시겠어요?"
+                    : `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion.next_question}`
+                const fullMessage = followupText
+                    ? responseText + followupText
+                    : responseText;
+
+                addMessage("bot", fullMessage);
+
+                if(isLast) { set({ rsmPhase : 2 })} // 마지막 질문 시 다음 단계 진입
+                break;
+            }
+            case 2: { // 자기소개서 최종 결과 전송
+                const resOfResult = await getResumeResult(rsmSessionId);
+                set({ finalRsm: resOfResult });
+                const title = resOfResult.title;
+                const sections = resOfResult.sections;
+                addMessage("bot", 
+                    `최종 자기소개서를 보여드립니다!\n\n${title}` + 
+                    Object.entries(sections)
+                        .map(
+                        ([key, value], index) =>
+                            `\n${index + 1}. ${key}\n${value}`
+                    )
+                    .join("\n")
+                );
+                set({ rsmPhase: 3 }); // 다음 단계 진입
+                break;
+            }
+            case 3: { // 자기소개서 저장
+                addMessage("bot", "자기소개서가 저장되었습니다. 다른 질문이 있으시면 언제든지 말씀해 주세요!");
+                break;
+            }
+            default: {
+                console.error("Invalid phase:", rsmPhase);
+                set((state) => ({
+                    messages: [
+                        ...state.messages,
+                        { from: "bot", text: "잘못된 요청입니다." }
+                    ]
+                }));
+                break;  
+            }
+        }
+    },
+
+    handleSaveResume: async (category) => {
+        const rsmPhase = get().rsmPhase
+        const finalRsm = get().finalRsm
+
+        if(rsmPhase === 3) {
+            console.log("자기소개서 카테고리:", category);
+            try {
+                const res = await saveResume({
+                    ...finalRsm,
+                    resume_category: category,
+                });
+                console.log("자기소개서 저장 성공:", res);
+            } catch (error) {
+                console.error("자기소개서 저장 실패:", error);
+            }
         }
     },
 }));

@@ -30,7 +30,7 @@ const Header = () => {
           <NavItem to="/bookmark/job">채용 정보</NavItem>
           <NavItem to="/bookmark/education">교육 정보</NavItem>
           <NavItem to="/bookmark/policy">고용정책/복지 정보</NavItem>
-          <NavItem href="#">자기소개서</NavItem>
+          <NavItem to="/resume">자기소개서</NavItem>
         </Nav>
 
         {isLoggedIn ? (
@@ -55,7 +55,7 @@ const Header = () => {
             <NavItem to="/bookmark/job">채용 정보</NavItem>
             <NavItem to="/bookmark/education">교육 정보</NavItem>
             <NavItem to="/bookmark/policy">고용정책/복지 정보</NavItem>
-            <NavItem href="#">자기소개서</NavItem>
+            <NavItem to="/resume">자기소개서</NavItem>
           </SlideNav>
         </SlideMenu>
       )}

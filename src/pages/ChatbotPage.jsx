@@ -49,6 +49,16 @@ const ChatbotPage =()=> {
     // const handleSearchJobInfo = useChatStore((s) => s.handleSearchJobInfo);
     const handleSearchEducationInfo = useChatStore((s) => s.handleSearchEducationInfo);
     const handleSearchPolicyInfo = useChatStore((s) => s.handleSearchPolicyInfo);
+    const rsmSessionId = useChatStore((s) => s.rsmSessionId);
+    const rsmPhase = useChatStore((s) => s.rsmPhase);
+    const rsmQuestionCategory = useChatStore((s) => s.rsmQuestionCategory);
+    const isLast = useChatStore((s) => s.isLast);
+    const companyName = useChatStore((s) => s.companyName);
+    const positionName = useChatStore((s) => s.positionName);
+    const rsmInfo = useChatStore((s) => s.rsmInfo);
+    const handleResumeSession = useChatStore((s) => s.handleResumeSession);
+    const handleSaveResume = useChatStore((s) => s.handleSaveResume);
+
 
     useEffect(() => {
       console.log('topic:', topic);
@@ -121,7 +131,7 @@ const ChatbotPage =()=> {
                 }
                 break;
             case "자기소개서":
-                addMessage("bot", "자기소개서를 작성합니다...");
+                await handleResumeSession(""); // 자기소개서 세션 바로 호출
                 break;
             default:
                 break;
@@ -130,20 +140,29 @@ const ChatbotPage =()=> {
     }
 
     // 메세지 전송
-    const handleSend = async () => {
-        if (inputText.trim() === "" || !inputText.trim()) return;
-        addMessage("user", inputText);
+    const handleSend = async (text) => {
+        const message = text ?? inputText;
+        console.log("handleSend - inputText:", message);
+        if (message.trim() === "" || !message.trim()) return;
+        addMessage("user", message);
+        setInputText("");
 
         // 재취업 분석
         if (
             topic === "재취업 분석" &&
             messages.length > 0 &&
-            messages[messages.length - 1].from === "bot"
+            messages[messages.length - 1].from === "bot" // 재취업 분석 api 바로 호출
         ) {
-          await handleReemploymentAnalysis(inputText);
+          await handleReemploymentAnalysis(message); 
         }
 
-        setInputText("");
+        // 자기소개서
+        if (topic === "자기소개서") {
+          console.log("자기소개서 세션 진행 단계:", rsmPhase);
+          await handleResumeSession(message);
+        }
+
+        return;
     }
 
     // 채용 정보 페이지 변경
@@ -174,6 +193,16 @@ const ChatbotPage =()=> {
       })();
     }, [infoCategory]);
 
+    // 자기소개서 관련 api
+    const handleResumeApi = async (option, category) => {
+        console.log("handleResumeApi - option:", option, "category:", category);  
+        if (option === "결과 보기") {
+            await handleSend("자기소개서 결과보기");
+        } else if (option === "저장") {
+            await handleSaveResume(category);
+        }
+    }
+
     return (
         <Wrapper>
             {/* ⬅️ Chat (left) */}
@@ -185,6 +214,7 @@ const ChatbotPage =()=> {
                       topic={topic}
                       messages={messages} 
                       onSelect={(category) => setInfoCategory(category)}
+                      handleResumeApi={(option, category)=>handleResumeApi(option, category)}
                     />
                 )}
                 {isLoading && <Loader message = "답변을 생성 중입니다..."/>}
@@ -231,22 +261,6 @@ const ChatbotPage =()=> {
                         ))
                     ))}
                 </CardList>
-                
-                {/* Pagination */}
-                {/* {topic === "채용 정보" && (
-                  <PaginationWrapper>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <PageBtn
-                        key={num}
-                        active={jobPage === num}
-                        onClick={() => useChatStore.getState().setJobPage(num)}
-                      >
-                        {num}
-                      </PageBtn>
-                    ))}
-                  </PaginationWrapper>
-                )} */}
-            
             </Sidebar>
 
             {/* ➡️ Modal */}
