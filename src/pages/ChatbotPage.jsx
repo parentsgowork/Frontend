@@ -140,10 +140,11 @@ const ChatbotPage =()=> {
     }
 
     // 메세지 전송
-    const handleSend = async () => {
-        console.log("handleSend - inputText:", inputText);
-        if (inputText.trim() === "" || !inputText.trim()) return;
-        addMessage("user", inputText);
+    const handleSend = async (text) => {
+        const message = text ?? inputText;
+        console.log("handleSend - inputText:", message);
+        if (message.trim() === "" || !message.trim()) return;
+        addMessage("user", message);
         setInputText("");
 
         // 재취업 분석
@@ -152,13 +153,13 @@ const ChatbotPage =()=> {
             messages.length > 0 &&
             messages[messages.length - 1].from === "bot" // 재취업 분석 api 바로 호출
         ) {
-          await handleReemploymentAnalysis(inputText); 
+          await handleReemploymentAnalysis(message); 
         }
 
         // 자기소개서
         if (topic === "자기소개서") {
           console.log("자기소개서 세션 진행 단계:", rsmPhase);
-          await handleResumeSession(inputText);
+          await handleResumeSession(message);
         }
 
         return;
@@ -192,6 +193,16 @@ const ChatbotPage =()=> {
       })();
     }, [infoCategory]);
 
+    // 자기소개서 관련 api
+    const handleResumeApi = async (option, category) => {
+        console.log("handleResumeApi - option:", option, "category:", category);  
+        if (option === "결과 보기") {
+            await handleSend("자기소개서 결과보기");
+        } else if (option === "저장") {
+            await handleSaveResume(category);
+        }
+    }
+
     return (
         <Wrapper>
             {/* ⬅️ Chat (left) */}
@@ -203,7 +214,7 @@ const ChatbotPage =()=> {
                       topic={topic}
                       messages={messages} 
                       onSelect={(category) => setInfoCategory(category)}
-                      onSave={handleSaveResume}
+                      handleResumeApi={(option, category)=>handleResumeApi(option, category)}
                     />
                 )}
                 {isLoading && <Loader message = "답변을 생성 중입니다..."/>}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const educationOptions = [
@@ -15,13 +15,29 @@ const policyOptions = [
   "생활 안정 지원",
 ];
 
-const ChatArea = ({ topic, messages, onSelect, onSave }) => {
+const resumeCategories = ["GENERAL", "TECH", "CAREER", "ACADEMIC"];
+
+const ChatArea = ({ topic, messages, onSelect, handleResumeApi }) => {
+  const [showSaveBtn, setShowSaveBtn] = useState(false);
+  const [selectedRsmCategory, setSelectedRsmCategory] = useState("");
+
     let options = [];
     if (topic === "교육 정보") {
         options = educationOptions;
     } else if (topic === "고용정책/복지 정보") {
         options = policyOptions;
     }
+
+    // 자기소개서 카테고리 선택
+    const handleCategorySelect = (category) => {
+        setSelectedRsmCategory(category);
+        setShowSaveBtn(true);
+    };
+
+    // 자기소개서 저장 버튼 클릭 시
+    const handleSaveClick = () => {
+        handleResumeApi("저장", selectedRsmCategory);
+    };
 
     return(
         <ChatBox>
@@ -45,14 +61,39 @@ const ChatArea = ({ topic, messages, onSelect, onSave }) => {
                       </ButtonGroup>
                   )}
 
+                  {/* 자기소개서 결과 보기 버튼 */}
+                  {idx === messages.length - 1 &&
+                    m.from === "bot" &&
+                    m.text.includes("지금까지 작성된 자기소개서를 보시겠어요?") && (
+                      <ButtonGroup>
+                        <OptionBtn onClick={() => handleResumeApi("결과 보기")}>
+                          자기소개서 결과 보기
+                        </OptionBtn>
+                      </ButtonGroup>
+                  )}
+
                   {/* 자기소개서 저장 버튼  */}
                   {idx === messages.length - 1 &&
                     m.from === "bot" &&
-                    m.text.includes("지금까지 작성된 자기소개서를") && (
+                    m.text.includes("최종 자기소개서를 보여드립니다!") && (
                       <ButtonGroup>
-                        <OptionBtn onClick={() => onSave()}>
-                          자기소개서 저장하기
-                        </OptionBtn>
+                        {resumeCategories.map((category) => (
+                          <OptionBtn
+                            key={category}
+                            onClick={() => handleCategorySelect(category)}
+                            style={{
+                              background: selectedRsmCategory === category ? "#e5e8ff" : "#fff",
+                              color: selectedRsmCategory === category ? "#1a3ec6" : "#000",
+                            }}
+                          >
+                            {category}
+                          </OptionBtn>
+                        ))}
+                        {showSaveBtn && (
+                          <OptionBtn onClick={handleSaveClick}>
+                            자기소개서 저장
+                          </OptionBtn>
+                        )}
                       </ButtonGroup>
                   )}
                 </Bubble>

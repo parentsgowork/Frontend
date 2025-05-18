@@ -227,7 +227,7 @@ const useChatStore = create((set, get) => ({
                 const followupText = (currentCategory == "강점약점" && nextCategory == "프로젝트경험")  
                     ? `\n\n마지막 질문입니다! ${resOfQuestion.next_question}`
                     :  (currentCategory == "프로젝트경험" && !nextCategory) 
-                    ? ""
+                    ? "\n\n지금까지 작성된 자기소개서를 보시겠어요?"
                     : `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion.next_question}`
                 const fullMessage = followupText
                     ? responseText + followupText
@@ -244,7 +244,7 @@ const useChatStore = create((set, get) => ({
                 const title = resOfResult.title;
                 const sections = resOfResult.sections;
                 addMessage("bot", 
-                    `지금까지 작성된 자기소개서를 보여드립니다!\n\n${title}` + 
+                    `최종 자기소개서를 보여드립니다!\n\n${title}` + 
                     Object.entries(sections)
                         .map(
                         ([key, value], index) =>
@@ -272,15 +272,16 @@ const useChatStore = create((set, get) => ({
         }
     },
 
-    handleSaveResume: async () => {
+    handleSaveResume: async (category) => {
         const rsmPhase = get().rsmPhase
         const finalRsm = get().finalRsm
 
         if(rsmPhase === 3) {
+            console.log("자기소개서 카테고리:", category);
             try {
                 const res = await saveResume({
                     ...finalRsm,
-                    resume_category: "TECH"
+                    resume_category: category,
                 });
                 console.log("자기소개서 저장 성공:", res);
             } catch (error) {
