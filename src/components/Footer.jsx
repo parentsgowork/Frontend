@@ -18,17 +18,17 @@ const Footer = () => {
           <Item>교육 과정</Item>
         </Column>
         <Column>
-          <Title>지원</Title>
+          {/* <Title>지원</Title>
           <Item>자주 묻는 질문</Item>
           <Item>이용 가이드</Item>
           <Item>고객 센터</Item>
-          <Item>개인정보처리방침</Item>
+          <Item>개인정보처리방침</Item> */}
         </Column>
         <Column>
-          <Title>연락처</Title>
+          {/* <Title>연락처</Title>
           <ContactItem><FaPhone /> 1588-1234</ContactItem>
           <ContactItem><FaEnvelope /> help@dasi-ilhae.kr</ContactItem>
-          <ContactItem><FaMapMarkerAlt /> 서울시 강남구 테헤란로 123</ContactItem>
+          <ContactItem><FaMapMarkerAlt /> 서울시 강남구 테헤란로 123</ContactItem> */}
         </Column>
       </FooterTop>
       <FooterBottom>

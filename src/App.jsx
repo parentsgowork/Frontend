@@ -13,6 +13,7 @@ import SignupForm from './pages/Signup';
 import Login from './pages/Login';
 import ChatbotPage from './pages/ChatbotPage';
 import BookmarkPage from './pages/BookmarkPage';
+import ResumePage from './pages/ResumePage';
 import RequireAuth from './components/RequireAuth';
 
 
@@ -32,7 +33,7 @@ const App = () => {
     <Routes>
       <Route element={<Layout />}>
         {/* NO REDIRECTION */}
-        {/* <Route path="/api-test" element={<ApiTest />} /> */}
+        <Route path="/api-test" element={<ApiTest />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
@@ -40,6 +41,7 @@ const App = () => {
         {/* REQUIRED AUTH */}
         <Route path="/chatbot/:topic?/:category?" element={<RequireAuth><ChatbotPage /></RequireAuth>} />
         <Route path="/bookmark/:topic" element={<RequireAuth><BookmarkPage /></RequireAuth>} />
+        <Route path="/resume" element={<RequireAuth><ResumePage /></RequireAuth>} />
       </Route>
     </Routes>
   );
