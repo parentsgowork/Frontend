@@ -224,10 +224,16 @@ const useChatStore = create((set, get) => ({
                 set({ rsmQuestionCategory: currentCategory, isLast });
 
                 const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion.ai_response}`;
-                const followupText = (nextCategory == "프로젝트경험" || !nextCategory) ? 
-                    `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion.next_question}` 
-                    : `\n\n마지막 질문입니다! ${resOfQuestion.next_question}`;
-                addMessage("bot", responseText+followupText);
+                const followupText = (currentCategory == "강점약점" && nextCategory == "프로젝트경험")  
+                    ? `\n\n마지막 질문입니다! ${resOfQuestion.next_question}`
+                    :  (currentCategory == "프로젝트경험" && !nextCategory) 
+                    ? ""
+                    : `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion.next_question}`
+                const fullMessage = followupText
+                    ? responseText + followupText
+                    : responseText;
+
+                addMessage("bot", fullMessage);
 
                 if(isLast) { set({ rsmPhase : 2 })} // 마지막 질문 시 다음 단계 진입
                 break;
