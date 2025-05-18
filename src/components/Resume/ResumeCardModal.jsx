@@ -2,60 +2,42 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import Loader from "../Loader";
 
-const BmkCardModal = ({ topic, category, card, onClose }) => {
+const ResumeCardModal = ({ card, onClose }) => {
 
     useEffect(() => {
     console.log("CardModal mounted");
-    console.log("Topic:", topic);
-    console.log("Category:", category);
     console.log("Card:", card);
     return () => {
         console.log("CardModal unmounted");
     };
     }, []);
 
-    const handleApplyClick = () => {
-    if (card.url) {
-        window.open(card.url, "_blank");
-    }
-    };
 
   return (
     <ModalOverlay>
       <ModalBody>
         <CloseBtn onClick={onClose}>×</CloseBtn>
-        {topic === "job" && (
-          <>
-            <h2>{card.title}</h2>
-            <p>{card.content}</p>
-          </>
-        )}
-
-        {topic === "education" && (
-          <>
-            <h2>{card.title}</h2>
-            {/* <p>{card.url}</p> */}
-          </>
-        )}  
-        {topic === "policy" && (
-          <>
-            <h2>{card.title}</h2>
-            {/* <p>{card.url}</p> */}
-          </>
-        )}
-        
-        {/* 북마크 버튼 */}
-        
-        {/* 지원하기 및 북마크 버튼 */}
-        <ButtonGroup>
-          <ApplyBtn onClick={handleApplyClick}>지원하기</ApplyBtn>
-        </ButtonGroup>
+          <h2>{card.title}</h2>
+          
+          {card.sections && Object.entries(card.sections).map(([sectionTitle, content]) => (
+            <SectionBlock key={sectionTitle}>
+              <h4>{sectionTitle}</h4>
+              <p>
+                {content.split("\n").map((line, idx) => (
+                  <React.Fragment key={idx}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </p>
+            </SectionBlock>
+          ))}
       </ModalBody>
     </ModalOverlay>
   );
 };
 
-export default BmkCardModal;
+export default ResumeCardModal;
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -74,9 +56,12 @@ const ModalBody = styled.div`
   background: #fff;
   padding: 32px;
   border-radius: 12px;
-  width: 480px; /* 고정 너비 */
+  width: 480px;        /* 고정 너비 */
+  height: 600px;       /* 고정 높이 (원하는 값으로 조정 가능) */
+  overflow-y: auto;    /* 세로 스크롤 */
   position: relative;
 `;
+
 
 const CloseBtn = styled.button`
   background: none;
@@ -119,5 +104,20 @@ const BookmarkBtn = styled.button`
 
   &:hover {
     background: #e0e0e0;
+  }
+`;
+
+const SectionBlock = styled.div`
+  margin-top: 24px;
+
+  h4 {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: #1a3ec6;
+  }
+
+  p {
+    white-space: pre-wrap;
+    line-height: 1.5;
   }
 `;

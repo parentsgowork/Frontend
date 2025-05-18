@@ -81,6 +81,13 @@ const BmkCard = ({ topic, category, data, onClick}) => {
               </>
             )}
 
+            {topic === "resume" && (
+              <>
+                <Title>{data.title}</Title>
+              </>
+            )}
+            
+
             <BookmarkFooter onClick={(e) => e.stopPropagation()}>
                 <span>저장됨</span>
                 <IconGroup>

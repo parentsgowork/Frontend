@@ -108,11 +108,11 @@ const saveResume = async (data) => {
  * @param {number} userId
  * @returns {Promise<AxiosResponse>}
  */
-const getUserResumes = async (userId) => {
+const getUserResumes = async () => {
   try {
-    const res = await pythonAPI.get(`/api/resume/user/${userId}`);
+    const res = await pythonAPI.get(`/api/resume/user`);
     console.log("유저 자기소개서 목록 조회 성공:", res);
-    return res;
+    return res.data;
   } catch (error) {
     console.error("유저 자기소개서 목록 조회 실패:", error);
     if (error.response) {
