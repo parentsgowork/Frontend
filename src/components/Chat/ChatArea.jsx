@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import styled from "styled-components";
 
 const educationOptions = [
@@ -17,7 +17,7 @@ const policyOptions = [
 
 const resumeCategories = ["GENERAL", "TECH", "CAREER", "ACADEMIC"];
 
-const ChatArea = ({ topic, messages, onSelect, handleResumeApi }) => {
+const ChatArea = ({ topic, messages, onSelect, handleResumeApi, ref }) => {
   const [showSaveBtn, setShowSaveBtn] = useState(false);
   const [selectedRsmCategory, setSelectedRsmCategory] = useState("");
 
@@ -40,7 +40,7 @@ const ChatArea = ({ topic, messages, onSelect, handleResumeApi }) => {
     };
 
     return(
-        <ChatBox>
+        <ChatBox ref={ref}>
             {messages.map((m, idx) => (
                 <Bubble key={idx} from={m.from}>
                   {m.text}
@@ -111,6 +111,12 @@ const ChatBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 `;
 const Bubble = styled.div`
   max-width: 70%;
