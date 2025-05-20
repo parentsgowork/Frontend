@@ -82,9 +82,17 @@ const ChatbotPage =()=> {
 
     // 메세지 전송(엔터)
     const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
             handleSend();
         }
+    }
+
+    // 메세지 입력
+    const handleInputChange = (e) => {
+        setInputText(e.target.value);
+        e.target.style.height = "auto"; // 초기화
+        e.target.style.height = `${e.target.scrollHeight}px`; // 높이 조정
     }
 
     // 초기 라우팅 처리
@@ -218,6 +226,7 @@ const ChatbotPage =()=> {
                     <Intro onOptionClick={handleOptionClick} />
                 ) : (
                     <ChatArea 
+                      ref={chatSectionRef}
                       topic={topic}
                       messages={messages} 
                       onSelect={(category) => setInfoCategory(category)}
@@ -234,8 +243,9 @@ const ChatbotPage =()=> {
                       <ChatInput
                           value={inputText}
                           placeholder="메세지를 입력하세요..." 
-                          onChange={(e) => setInputText(e.target.value)}
+                          onChange={(e) => handleInputChange(e)}
                           onKeyDown={handleKeyDown}
+                          rows={1}
                       />
                       <SendBtn onClick={handleSend}>전송</SendBtn>
                   </InputBar>
@@ -315,6 +325,7 @@ const ChatSection = styled.div`
   align-items: center;
   padding: 24px;
   padding-right: 80px;
+  padding-bottom: 155px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -391,7 +402,7 @@ const InputBar = styled.div`
     // left: 35px;  
 `;
 
-const ChatInput = styled.input`
+const ChatInput = styled.textarea`
   flex: 1;
   border: none;
   outline: none;
@@ -399,6 +410,11 @@ const ChatInput = styled.input`
   padding: 10px 12px;
   background: transparent;
   color: #333;
+  resize: none;
+  line-height: 1.5;
+  max-height: 130px;
+  overflow-y: auto;
+  font-family: 'Regular', sans-serif;
 
   &::placeholder {
     color: #aaa;
