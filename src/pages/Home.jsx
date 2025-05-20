@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from '../components/Footer';
 import ChatCategorySelector from '../components/Home/ChatCategorySelector';
-import exampleImage from '../assets/images/metamong.png'; // 예시 이미지 경로
+// import exampleImage from '../assets/images/metamong.png'; // 예시 이미지 경로
 import { theme } from '../constants/theme';
 import homeJobImage from '../assets/images/homeJob.png'; // 예시 이미지 경로
 import homeEducationImage from '../assets/images/homeEducation.png'; // 예시 이미지 경로
