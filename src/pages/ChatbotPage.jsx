@@ -203,6 +203,13 @@ const ChatbotPage =()=> {
         }
     }
 
+    // 새로운 대화 시작하기
+    const handleSetTopic = (topic) => {
+        setTopic(topic);
+        setInfoCategory("");
+        setSidebarOpen(false);
+    }
+
     return (
         <Wrapper>
             {/* ⬅️ Chat (left) */}
@@ -219,15 +226,20 @@ const ChatbotPage =()=> {
                 )}
                 {isLoading && <Loader message = "답변을 생성 중입니다..."/>}
 
-                <InputBar>
-                    <ChatInput
-                        value={inputText}
-                        placeholder="메세지를 입력하세요..." 
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
-                    <SendBtn onClick={handleSend}>전송</SendBtn>
-                </InputBar>
+                <InputWrapper>
+                  <BtnWrapper>
+                    <GoNewChatBtn onClick={()=>handleSetTopic(topic)}> 새로운 대화 시작하기</GoNewChatBtn>
+                  </BtnWrapper>
+                  <InputBar>
+                      <ChatInput
+                          value={inputText}
+                          placeholder="메세지를 입력하세요..." 
+                          onChange={(e) => setInputText(e.target.value)}
+                          onKeyDown={handleKeyDown}
+                      />
+                      <SendBtn onClick={handleSend}>전송</SendBtn>
+                  </InputBar>
+                </InputWrapper>
             </ChatSection>
 
             <ToggleBtn onClick={()=>setSidebarOpen(!sidebarOpen)}>
@@ -271,30 +283,6 @@ const ChatbotPage =()=> {
 
 export default ChatbotPage;
 
-// const dummyCards = [
-//   {
-//     id: 1,
-//     company: "네이버",
-//     position: "프론트엔드 개발자",
-//     summary: "React, TypeScript 경험 필수",
-//     detail: "상세 JD, 우대사항 등"
-//   },
-//   {
-//     id: 2,
-//     company: "카카오",
-//     position: "백엔드 개발자",
-//     summary: "Java, Spring Boot 경력자 우대",
-//     detail: "상세 JD, 복지, 연봉 등"
-//   },
-//   {
-//     id: 3,
-//     company: "라인",
-//     position: "풀스택 개발자",
-//     summary: "Node.js, React 개발 경험",
-//     detail: "협업문화, 기술스택 설명"
-//   }
-// ];
-
 const Wrapper = styled.div`
     position: relative;
   display: flex;
@@ -332,8 +320,65 @@ const ChatSection = styled.div`
   z-index: 1;
 `;
 
-const InputBar = styled.div`
+const InputWrapper = styled.div`
+    position: absolute;
+    bottom: 0;
+    left: -20px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    @media (max-width: 768px) {
+        padding: 10px;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        border-top: 1px solid #ececec;
+        box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.05);
+        z-index: 10;
+    }
+`;
+
+const BtnWrapper = styled.div`
     width: 95%;
+    display: flex;
+    justify-content: flex-start;
+    padding:0px 20px;
+    @media (max-width: 768px) {
+        margin-bottom: 5px;
+        padding: 0 10px;
+    }
+`;
+
+const GoNewChatBtn = styled.button`
+    background: #1a3ec6;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-family: 'Regular', sans-serif;
+    &:hover {
+        background: #1242ad;
+    }
+    @media (max-width: 768px) {
+        margin-bottom: 5px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    } 
+`;
+
+const InputBar = styled.div`
+    width: 94%;
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
@@ -341,9 +386,9 @@ const InputBar = styled.div`
     align-items: center;
     padding: 10px 12px;
     gap: 8px;
-    position: absolute;
-    bottom: 20px;
-    left: 35px;  
+    // position: absolute;
+    // bottom: 20px;
+    // left: 35px;  
 `;
 
 const ChatInput = styled.input`
