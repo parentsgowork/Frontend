@@ -18,7 +18,7 @@ const ChatCategorySelector = ({ dot = 0 }) => {
   ];
 
   const questionTextByDot = [
-    '어떤 직종을 찾고 계신가요?',
+    '사용자 맞춤 일자리를 AI가 찾아왔어요!',
     '관심 있는 복지 분야를 선택해주세요.',
     '희망하는 교육 분야를 선택해주세요.',
     '어떤 경력을 강조하고 싶으신가요?'
@@ -39,11 +39,19 @@ const ChatCategorySelector = ({ dot = 0 }) => {
       <ButtonList>
         {dot === 0 ? (
           <>
-            <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>사무직</CategoryButton>
+            <DescriptionCard>
+            <DescriptionTitle>💬 AI 설명</DescriptionTitle><b>[다시 일해 복지센터]</b><br/>정서 지원에 능한 <b>요양 보호사를</b> 모집합니다.<br/>오전 <b>10시 30분</b>부터 오후 <b>1:30</b>까지 돌봐야합니다.<br/><b>시급 12000원</b>, 기초 수당 별도 제공
+            <br/>서울시 성북구 서경로 일해 빌딩
+            <br/><b>2025년 07월 20일까지 모집</b>
+            {/*
+            <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>다시일해 복지센터</CategoryButton>
             <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>서비스직</CategoryButton>
             <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>기술직</CategoryButton>
             <CategoryButton onClick={() => handleNavigate('/chatbot/job')}>판매직</CategoryButton>
-          </>
+              */}
+            </DescriptionCard>
+            </>
+          
         ):
         dot === 1 ? (
           <>
@@ -183,3 +191,26 @@ const Dot = styled.div`
   background-color: ${({ active }) => (active ? '#1a73e8' : '#ccc')};
 `;
 
+
+const DescriptionCard = styled.div`
+  background-color: white;
+  border: 1px solid #cfd8e3;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color:rgb(247, 250, 255);  
+  }
+`;
+
+const DescriptionTitle = styled.div`
+  color: #1a73e8;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+`;
