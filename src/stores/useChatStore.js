@@ -199,66 +199,95 @@ const useChatStore = create((set, get) => ({
                 break;
             }
             case 0: {// 자기소개서 세션 생성 및 첫번째 성장과정에 대한 대답 전송
-                const resOfCreateSession = await initResumeSession(companyName, positionName);
-                const newSessionId = resOfCreateSession.session_id;
-                set({ rsmSessionId: newSessionId });
-                set({ rsmQuestionCategory: resOfCreateSession.category });
-                
-                const resOfQuestion1 = await answerResumeQuestion(newSessionId, inputText);
-                set({ rsmQuestionCategory: resOfQuestion1.current_category });
-                set({ isLast: resOfQuestion1.is_last });
+                try{
+                    set({ isLoading: true });
 
-                const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion1.ai_response}`;
-                const followupText =  `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion1.next_question}` 
-                addMessage("bot", responseText+followupText);
+                    const resOfCreateSession = await initResumeSession(companyName, positionName);
+                    const newSessionId = resOfCreateSession.session_id;
+                    set({ rsmSessionId: newSessionId });
+                    set({ rsmQuestionCategory: resOfCreateSession.category });
+                    
+                    const resOfQuestion1 = await answerResumeQuestion(newSessionId, inputText);
+                    set({ rsmQuestionCategory: resOfQuestion1.current_category });
+                    set({ isLast: resOfQuestion1.is_last });
+                    set({ rsmPhase: 1 }); // 다음 단계 진입
 
-                set({ rsmPhase: 1 }); // 다음 단계 진입
+                    const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion1.ai_response}`;
+                    const followupText =  `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion1.next_question}` 
+                    addMessage("bot", responseText+followupText);
+                } catch (error) {
+                    console.error("자기소개서 세션 생성 실패:", error);
+                    addMessage("bot", "오류가 발생했습니다. 다시 시도해 주세요.");
+                } finally {
+                    set({ isLoading: false });
+                }
+
                 break;
             }
             case 1: { // 자기소개서 질문에 대한 대답 전송
-                const resOfQuestion = await answerResumeQuestion(rsmSessionId, inputText);
-                const currentCategory = resOfQuestion.current_category;
-                const nextCategory = resOfQuestion.next_category;
-                const isLast = resOfQuestion.is_last;
-                
-                set({ rsmQuestionCategory: currentCategory, isLast });
+                try{
+                    set({ isLoading: true });
 
-                const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion.ai_response}`;
-                const followupText = (currentCategory == "강점약점" && nextCategory == "프로젝트경험")  
-                    ? `\n\n마지막 질문입니다! ${resOfQuestion.next_question}`
-                    :  (currentCategory == "프로젝트경험" && !nextCategory) 
-                    ? "\n\n지금까지 작성된 자기소개서를 보시겠어요?"
-                    : `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion.next_question}`
-                const fullMessage = followupText
-                    ? responseText + followupText
-                    : responseText;
+                    const resOfQuestion = await answerResumeQuestion(rsmSessionId, inputText);
+                    const currentCategory = resOfQuestion.current_category;
+                    const nextCategory = resOfQuestion.next_category;
+                    const isLast = resOfQuestion.is_last;
+                    
+                    set({ rsmQuestionCategory: currentCategory, isLast });
 
-                addMessage("bot", fullMessage);
+                    const responseText =  `이렇게 작성해보는 건 어떨까요?\n\n${resOfQuestion.ai_response}`;
+                    const followupText = (currentCategory == "강점약점" && nextCategory == "프로젝트경험")  
+                        ? `\n\n마지막 질문입니다! ${resOfQuestion.next_question}`
+                        :  (currentCategory == "프로젝트경험" && !nextCategory) 
+                        ? "\n\n지금까지 작성된 자기소개서를 보시겠어요?"
+                        : `\n\n다음 질문도 이어서 답변해보겠습니다.  ${resOfQuestion.next_question}`
+                    const fullMessage = followupText
+                        ? responseText + followupText
+                        : responseText;
 
-                if(isLast) { set({ rsmPhase : 2 })} // 마지막 질문 시 다음 단계 진입
+                    addMessage("bot", fullMessage);
+
+                    if(isLast) { set({ rsmPhase : 2 })} // 마지막 질문 시 다음 단계 진입
+                } catch (error) {
+                    console.error("자기소개서 질문 응답 실패:", error);
+                    addMessage("bot", "오류가 발생했습니다. 다시 시도해 주세요.");
+                } finally {
+                    set({ isLoading: false });
+                }
+
                 break;
             }
             case 2: { // 자기소개서 최종 결과 전송
-                const resOfResult = await getResumeResult(rsmSessionId);
-                set({ finalRsm: resOfResult });
-                const title = resOfResult.title;
-                const sections = resOfResult.sections;
-                addMessage("bot", 
-                    `최종 자기소개서를 보여드립니다!\n\n${title}` + 
-                    Object.entries(sections)
-                        .map(
-                        ([key, value], index) =>
-                            `\n${index + 1}. ${key}\n${value}`
-                    )
-                    .join("\n")
-                );
-                set({ rsmPhase: 3 }); // 다음 단계 진입
+                try{
+                    set({ isLoading: true });
+
+                    const resOfResult = await getResumeResult(rsmSessionId);
+                    set({ finalRsm: resOfResult });
+                    const title = resOfResult.title;
+                    const sections = resOfResult.sections;
+                    addMessage("bot", 
+                        `최종 자기소개서를 보여드립니다!\n\n${title}` + 
+                        Object.entries(sections)
+                            .map(
+                            ([key, value], index) =>
+                                `\n${index + 1}. ${key}\n${value}`
+                        )
+                        .join("\n")
+                    );
+                    set({ rsmPhase: 3 }); // 다음 단계 진입
+                } catch (error) {
+                    console.error("자기소개서 최종 결과 응답 실패:", error);
+                    addMessage("bot", "오류가 발생했습니다. 다시 시도해 주세요.");
+                } finally {
+                    set({ isLoading: false });
+                }
+                
                 break;
             }
-            case 3: { // 자기소개서 저장
-                addMessage("bot", "자기소개서가 저장되었습니다. 다른 질문이 있으시면 언제든지 말씀해 주세요!");
-                break;
-            }
+            // case 3: { // 자기소개서 저장
+            //     addMessage("bot", "자기소개서가 저장되었습니다. 다른 질문이 있으시면 언제든지 말씀해 주세요!");
+            //     break;
+            // }
             default: {
                 console.error("Invalid phase:", rsmPhase);
                 set((state) => ({
@@ -276,16 +305,21 @@ const useChatStore = create((set, get) => ({
         const rsmPhase = get().rsmPhase
         const finalRsm = get().finalRsm
 
+
         if(rsmPhase === 3) {
             console.log("자기소개서 카테고리:", category);
             try {
+                set({ isLoading: true });
                 const res = await saveResume({
                     ...finalRsm,
                     resume_category: category,
                 });
+                get().addMessage("bot", "자기소개서가 저장되었습니다. 다른 질문이 있으시면 언제든지 말씀해 주세요!");
                 console.log("자기소개서 저장 성공:", res);
             } catch (error) {
                 console.error("자기소개서 저장 실패:", error);
+            } finally {
+                set({ isLoading: false });
             }
         }
     },
