@@ -28,6 +28,26 @@ const getDotImage = (dot) => {
 
 const Home = () => {
   const serviceSectionRef = React.useRef(null);
+  // 9초 swipe 적용
+  React.useEffect(() => {
+  const wrapper = serviceSectionRef.current;
+  if (!wrapper) return;
+
+  const sectionCount = wrapper.children.length;
+  let currentIndex = 0;
+
+  const interval = setInterval(() => {
+    currentIndex = (currentIndex + 1) % sectionCount;
+    wrapper.scrollTo({
+      left: wrapper.clientWidth * currentIndex,
+      behavior: 'smooth',
+    });
+  }, 9000);
+
+  return () => clearInterval(interval);
+}, []);
+
+
   const navigate = useNavigate();
 
   const handleScrollToSection = () => {
